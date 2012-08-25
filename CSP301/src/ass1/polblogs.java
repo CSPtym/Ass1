@@ -117,6 +117,7 @@ public class polblogs extends JPrefuseApplet {
 	private static final String edges = "graph.edges";
 	
 	public void init() {
+		System.out.println();
 		UILib.setPlatformLookAndFeel();
 		JComponent graphview = demo("/polbooks.xml", "label");
 		this.getContentPane().add(graphview);				
