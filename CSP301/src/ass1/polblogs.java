@@ -119,7 +119,7 @@ public class polblogs extends JPrefuseApplet {
 	public void init() {
 		System.out.println();
 		UILib.setPlatformLookAndFeel();
-		JComponent graphview = demo("/polbooks.xml", "label");
+		JComponent graphview = demo("polblogs.xml", "label");
 		this.getContentPane().add(graphview);				
 	}
 	
@@ -433,20 +433,72 @@ public class polblogs extends JPrefuseApplet {
 	public static JComponent demo(Graph g, String label) {
 		// create a new, empty visualization for our data
 		
-
-		//ratio(g);
-		//triad(g);
 		
-		g.addColumn("id", Integer.class);
-		for(int i=0;i<g.getNodeCount();i++)
-			g.getNode(i).set(2, i);
+		
+		Graph debug=new Graph();
+		for(int i=0;i<8;i++)
+		debug.addNode();
+		debug.addColumn("label", String.class);
+		debug.addColumn("value", String.class);
+		debug.addColumn("source", String.class);
+		debug.getNode(0).set(0, "a");
+		debug.getNode(1).set(0, "b");
+		debug.getNode(2).set(0, "c");
+		debug.getNode(3).set(0, "d");
+		debug.getNode(4).set(0, "e");
+		debug.getNode(5).set(0, "f");
+		debug.getNode(6).set(0, "g");
+		debug.getNode(7).set(0, "h");
+		
+		debug.getNode(0).set(1, "a");
+		debug.getNode(1).set(1, "b");
+		debug.getNode(2).set(1, "c");
+		debug.getNode(3).set(1, "d");
+		debug.getNode(4).set(1, "e");
+		debug.getNode(5).set(1, "f");
+		debug.getNode(6).set(1, "g");
+		debug.getNode(7).set(1, "h");
+		
+		debug.getNode(0).set(2, "a");
+		debug.getNode(1).set(2, "b");
+		debug.getNode(2).set(2, "c");
+		debug.getNode(3).set(2, "d");
+		debug.getNode(4).set(2, "e");
+		debug.getNode(5).set(2, "f");
+		debug.getNode(6).set(2, "g");
+		debug.getNode(7).set(2, "h");
+
+		debug.addEdge(0, 1);
+		debug.addEdge(1, 2);
+		debug.addEdge(2, 3);
+		debug.addEdge(3, 2);
+		debug.addEdge(3, 7);
+		debug.addEdge(7, 3);
+		debug.addEdge(7, 6);
+		debug.addEdge(2, 6);
+		debug.addEdge(6, 5);
+		debug.addEdge(5, 6);
+		debug.addEdge(1, 5);
+		debug.addEdge(4, 5);
+		debug.addEdge(4, 0);
+		debug.addEdge(1, 4);
+		
+		//System.out.println("challll "+debug.getEdge(6, 7));
+		Scc m=new Scc(g);
+		m.dfs(debug);
+		//System.out.println("yee "+ g.getNode(0).get(4));
+		Graph h=m.ulta(debug);
+		//System.out.println("lala "+h.getNode(0).get(4));
+		m.dfs2(h);
+		debug.addColumn("count", Integer.class);
+		//System.out.println(h.getNode(0).get(6));
+		for(int p=0;p<debug.getNodeCount();p++)
+			debug.getNode(p).set(6, (int)h.getNode(p).get(6));
+		Graph answer=m.func(debug);
 		//Graph h=randomgenerator(g,label);
 
-		//Triad tri=new Triad();
-		//System.out.println(tri.triad(g));
-		
-		//ratio(h);
-		//triad(h);
+		System.out.println("challll "+answer.getEdge(1,2));
+		//System.out.println(answer.getEdge((int)g.getNode(8).get(6),(int)g.getNode(640).get(6)));
 		return (helper(g, label));
 	}
  

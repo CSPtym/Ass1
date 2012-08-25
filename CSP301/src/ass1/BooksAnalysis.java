@@ -15,6 +15,7 @@ public class BooksAnalysis {
 					triad++;
 		
 		triad/=6;
+		
 		return(triad);
 		//System.out.println("triad= "+triad);
 	}

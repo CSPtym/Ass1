@@ -384,12 +384,12 @@ public class polbooks extends JPrefuseApplet {
 		int[] A=new int[30];
 		double[] B=new double[30];
 		 BooksAnalysis book=new  BooksAnalysis();
-		/*for(int i=0;i<30;i++)
+		for(int i=0;i<30;i++)
 		{
 			Graph h=randomgenerator(g,label);
 			A[i]=book.triad(h);
 			B[i]=book.ratio(h);
-		}*/
+		}
 		return (helper(g, label));
 	}
  
