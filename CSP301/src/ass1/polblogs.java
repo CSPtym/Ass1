@@ -169,8 +169,8 @@ public class polblogs extends JPrefuseApplet {
 			polariser++;
 		
 		System.out.println("polariser= "+polariser);
-		int nc2=(n*(n-1))/2;
-		double ratio=polariser/nc2;
+		//int nc2=(n*(n-1))/2;
+		double ratio=polariser/e;
 		System.out.println("ratio="+ratio);
 	}
 	
@@ -191,9 +191,7 @@ public class polblogs extends JPrefuseApplet {
 			h.getNode(i).set(0, g.getNode(i).get(0));
 			h.getNode(i).set(1, g.getNode(i).get(1));
 		}
-		//System.out.println((n*(n-1)*(n-2))/6);
-	//	for(int i=0;i<e;i++)
-		//	g.removeEdge(i);
+		
 		Random rn=new Random();
 		for(int i=0;i<e;i++)
 		{
@@ -204,7 +202,7 @@ public class polblogs extends JPrefuseApplet {
 			h.addEdge(a,b);
 		}
 		
-		//helper(h,label);
+		
 		return h;
 		
 		
