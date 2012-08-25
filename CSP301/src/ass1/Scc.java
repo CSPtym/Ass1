@@ -229,6 +229,7 @@ public class Scc {
 				while(it.hasNext())
 				{
 					TableNode n=(TableNode) it.next();
+					if(i!=(int)n.get(6))
 					answer.addEdge((int)n.get(6),i);
 				}
 				Iterator itr=g.getNode((int)array[i].getNode(0).get(5)).outNeighbors();
@@ -237,6 +238,7 @@ public class Scc {
 					TableNode n=(TableNode) itr.next();
 				
 					//System.out.println(n  + ":" + n.get(6));
+					if(i!=(int)n.get(6))
 					answer.addEdge(i,(int)n.get(6));
 				}
 			}
@@ -264,12 +266,14 @@ public class Scc {
 					while(it.hasNext())
 					{
 						TableNode n=(TableNode) it.next();
+						if(i!=(int)n.get(6))
 						answer.addEdge((int)n.get(6),i);
 					}
 					Iterator itr=g.getNode((int)array[i].getNode(k).get(5)).outNeighbors();
 					while(itr.hasNext())
 					{
 						TableNode n=(TableNode) itr.next();
+						if(i!=(int)n.get(6))
 						answer.addEdge(i,(int)n.get(6));
 					}
 				}
@@ -279,7 +283,7 @@ public class Scc {
 		}
 		// 524 ko dhek lena
 		//System.out.println(answer.getNodeCount());
-		//System.out.println(answer.getEdgeCount());
+		System.out.println("edges = "+answer.getEdgeCount());
 		return answer;
 	} 
 	

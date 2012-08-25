@@ -6,6 +6,9 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Shape;
 import java.awt.event.MouseEvent;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.util.Random;
 
 import javax.swing.BorderFactory;
@@ -39,8 +42,10 @@ import prefuse.controls.WheelZoomControl;
 import prefuse.controls.ZoomControl;
 import prefuse.controls.ZoomToFitControl;
 import prefuse.data.Graph;
+import prefuse.data.Table;
 import prefuse.data.Tuple;
 import prefuse.data.event.TupleSetListener;
+import prefuse.data.io.CSVTableWriter;
 import prefuse.data.io.GraphMLReader;
 import prefuse.data.tuple.TupleSet;
 import prefuse.render.DefaultRendererFactory;
@@ -117,7 +122,8 @@ public class polbooks extends JPrefuseApplet {
 	public void init() {
 		UILib.setPlatformLookAndFeel();
 		JComponent graphview = demo("/polbooks.xml", "label");
-		this.getContentPane().add(graphview);				
+		this.getContentPane().add(graphview);	
+		
 	}
 	
 	public static JComponent demo(String datafile, String label) {
@@ -135,11 +141,61 @@ public class polbooks extends JPrefuseApplet {
 		}
 		return demo(g, label);
 	}
-	public static void caller(VisualGraph vg,Graph g){
-		System.out.print(vg.getNode(0).get("label"));
+	public static void caller(VisualGraph vg,Graph g,String label){
+		int[] A=new int[30];
+		double[] B=new double[30];
+		double[] C=new double[30];
+		double[] D=new double[30];
+		 BooksAnalysis book=new  BooksAnalysis();
+		 System.out.println(book.triad(g).sum);
+		 	Table table=new Table();
+
+			table.addColumn("Graphs",String.class);
+			table.addColumn("Ratios", Double.class);
+			table.addColumn("Triads",Integer.class);
+			table.addColumn("Global Coefficients",Double.class);
+			table.addColumn("Local Coefficients",Double.class);
+		/*	for(int i=0;i<30;i++)
+		{
+			Graph h=randomgenerator(g,label);
+			A[i]=book.triad(h).triad;
+			B[i]=book.ratio(h);
+			C[i]=book.coefficient(h);
+			//System.out.println(C[i]);
+			D[i]=book.triad(h).sum;
+			System.out.println(D[i]);
+		}
+		*/
+		
+		/*for (int k=0;k<A.length;k++){
+			int row=table.addRow();
+			table.set(row,"Graphs","Graph"+k);
+			table.set(row,"Ratios",B[k]);
+			table.set(row,"Triads",A[k]);
+			table.set(row,"Global Coefficients",C[k]);
+			table.set(row,"Local Coefficients", D[k]);
+		}*/
+		
+		try{
+		//	FileWriter fstream = new FileWriter("out.txt");
+			//BufferedWriter out = new BufferedWriter(fstream);
+			
+			//FileOutputStream f = new FileOutputStream(new File("out1.txt"));
+			//OutputStream output = new FileOutputStream("out1.txt");
+			//CSVTableWriter writer=new CSVTableWriter();
+			//writer.writeTable(table,"out1.txt");
+			/*String[] arr={"\"Graphs\""+",","\"Ratio\""+",","\"Triads\""};
+			for (int i=0;i<arr.length;i++){
+			out.write(arr[i]);
+			}
+			out.close();*/
+		}
+		catch(Exception e){
+			System.err.println("Error: " + e.getMessage());
+		
 	}
 	
-	
+	}	
 	
 	
 	public static Graph randomgenerator(Graph g, String label)
@@ -190,7 +246,7 @@ public class polbooks extends JPrefuseApplet {
 	
 	final Visualization vis = new Visualization();
 	VisualGraph vg = vis.addGraph(graph, g);
-	caller(vg,g);
+	caller(vg,g,label);
 	g.addColumn("degree",Integer.class);
 	for (int i=0;i<g.getNodeCount();i++){
 		g.getNode(i).set("degree",g.getNode(i).getDegree());
@@ -377,19 +433,8 @@ public class polbooks extends JPrefuseApplet {
 	
 	public static JComponent demo(Graph g, String label) {
 		// create a new, empty visualization for our data
-		g.addColumn("id", Integer.class);
-		for(int i=0;i<g.getNodeCount();i++)
-			g.getNode(i).set(2, i);
 		
-		int[] A=new int[30];
-		double[] B=new double[30];
-		 BooksAnalysis book=new  BooksAnalysis();
-		for(int i=0;i<30;i++)
-		{
-			Graph h=randomgenerator(g,label);
-			A[i]=book.triad(h);
-			B[i]=book.ratio(h);
-		}
+
 		return (helper(g, label));
 	}
  
