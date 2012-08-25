@@ -72,7 +72,7 @@ class FinalControlListener extends ControlAdapter implements Control{
 		       p.addNode();
 		       p.addColumn("babloo",String.class);
 		       p.getNode(0).set(0,"chotu");
-		       JPanel jpan = new prefuse.demos.GraphDummy(p, "babloo");
+		       JPanel jpan = new GraphDummy(p, "babloo");
 		       frame.getContentPane().add( jpan );
 		       frame.setVisible(true);
 		    	
