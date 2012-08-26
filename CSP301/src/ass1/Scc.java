@@ -109,7 +109,7 @@ public class Scc {
 	
 	
 	
-	public static void dfs2(Graph g)
+	public static Graph dfs2(Graph g)
 	{
 		
 		int n=g.getNodeCount();
@@ -153,6 +153,7 @@ public class Scc {
 				array[count].getNode(0).set(6, 0);
 				
 				dfs2helper(g,exittime[i],count);
+				array[count].addEdge(0, koitobachao-1);
 		//		System.out.print(b  + "-- >");
 				array2[count]=koitobachao;
 				i--;
@@ -163,12 +164,22 @@ public class Scc {
 		
 		System.out.println(count);
 		System.out.println("n="+n);
-		/*for (int k =0;k<count;k++)
+		int k=0;
+
+		for (k =0;k<count;k++)
 		{
-		for(int j=0;j<array2[k];j++)
+			if(array2[k]==3)
+				break;
+			
+		/*for(int j=0;j<array2[k];j++)
 		System.out.print(array[k].getNode(j).get(5)+"-->");
-		System.out.println();
-		}*/
+		System.out.println();*/
+		}
+		for(int ke=0;ke<500;ke++)
+		System.out.println( array[524].getEdge(ke));
+		return array[524];
+		
+		
 		//System.out.println("ye dheko "+g.getNode(2).get(6));
 		//return g;
 	}
@@ -199,7 +210,6 @@ public class Scc {
 				 dfs2helper(g,(int) n.get(5),count);
 			 }
 		}
-		
 	}
 	public static Graph func(Graph g)
 	{
@@ -232,7 +242,7 @@ public class Scc {
 					if(i!=(int)n.get(6))
 					answer.addEdge((int)n.get(6),i);
 				}
-				Iterator itr=g.getNode((int)array[i].getNode(0).get(5)).outNeighbors();
+				/*Iterator itr=g.getNode((int)array[i].getNode(0).get(5)).outNeighbors();
 				while(itr.hasNext())
 				{
 					TableNode n=(TableNode) itr.next();
@@ -240,21 +250,21 @@ public class Scc {
 					//System.out.println(n  + ":" + n.get(6));
 					if(i!=(int)n.get(6))
 					answer.addEdge(i,(int)n.get(6));
-				}
+				}*/
 			}
 			else
 			{
-				String name="";
+				String label="";
 				String source="";
 				int idg=0;
 				for (int j=0;j<array2[i];j++)
 				{
-					name =name+ " " + j + ". " + array[i].getNode(j).get(0);
+					label =label+ " " + j + ". " + array[i].getNode(j).get(0);
 					source=source+ " " + j + ". " + array[i].getNode(j).get(2);
 					idg+=((int)array[i].getNode(j).get(5))*(Math.pow(g.getNodeCount(), j));
 					//array[i].getNode(j)
 				}
-				answer.getNode(i).set(0, name);
+				answer.getNode(i).set(0, label);
 				answer.getNode(i).set(3, source);
 				answer.getNode(i).set(1, idg);
 				answer.getNode(i).set(2, "2");
@@ -269,13 +279,13 @@ public class Scc {
 						if(i!=(int)n.get(6))
 						answer.addEdge((int)n.get(6),i);
 					}
-					Iterator itr=g.getNode((int)array[i].getNode(k).get(5)).outNeighbors();
+				/*	Iterator itr=g.getNode((int)array[i].getNode(k).get(5)).outNeighbors();
 					while(itr.hasNext())
 					{
 						TableNode n=(TableNode) itr.next();
 						if(i!=(int)n.get(6))
 						answer.addEdge(i,(int)n.get(6));
-					}
+					}*/
 				}
 				
 			}

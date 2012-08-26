@@ -6,7 +6,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Shape;
 import java.awt.event.MouseEvent;
-import java.util.Random;
+import java.util.Iterator;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -65,9 +65,8 @@ class FinalControlListener extends ControlAdapter implements Control{
 	public void itemClicked(VisualItem item, MouseEvent e){
 		if(item instanceof NodeItem)
 		{	
-			 JFrame frame = new JFrame( "Prefuse");
-		     frame.setBounds(0, 0, 400, 300);
-		        
+			   JFrame frame = new JFrame( "Prefuse");
+		       frame.setBounds(0, 0, 400, 300);  
 		       Graph p=new Graph();
 		       p.addNode();
 		       p.addColumn("babloo",String.class);
@@ -81,7 +80,6 @@ class FinalControlListener extends ControlAdapter implements Control{
 		
 }
 class NodeRenderer extends ShapeRenderer{
-	
 	@Override
 	protected Shape getRawShape(VisualItem item){
 		double x = item.getX();
@@ -90,16 +88,16 @@ class NodeRenderer extends ShapeRenderer{
         double y = item.getY();
         if ( Double.isNaN(y) || Double.isInfinite(y) )
             y = 0;
-        int value=(int)item.get("value");
+        Integer value=Integer.parseInt(item.get("value").toString());
         double width = getBaseSize()+item.getSize()+value;
         // Center the shape around the specified x and y
         if ( width > 1 ) {
             x = x-width/2;
             y = y-width/2;
         }
-        if (!item.canGet("value",Integer.class))
+        if (!item.canGet("value",String.class))
         	return ellipse(x, y, width, width);
-        int v=(Integer)item.get("value");
+        Integer v=Integer.parseInt(item.get("value").toString());
         if (v==0)
         	return star((float)x, (float)y,(float) width);
         else if(v==1)
@@ -158,7 +156,7 @@ public class polblogs extends JPrefuseApplet {
 		triad/=3;
 		System.out.println("triad= "+triad);
 	}
-	public static void ratio(Graph g)
+	/*public static void ratio(Graph g)
 	{
 
 		double polariser=0.;
@@ -213,18 +211,15 @@ public class polblogs extends JPrefuseApplet {
 	
 	
 	
-	
+	*/
 	public static JComponent helper(Graph g, String label) {
-		
-	
-	
 	final Visualization vis = new Visualization();
 	VisualGraph vg = vis.addGraph(graph, g);
-	caller(vg,g);
-	g.addColumn("degree",Integer.class);
+	//caller(vg,g);
+	/*g.addColumn("degree",Integer.class);
 	for (int i=0;i<g.getNodeCount();i++){
 		g.getNode(i).set("degree",g.getNode(i).getDegree());
-	}
+	}*/
 	
 	vis.setValue(edges, null, VisualItem.INTERACTIVE, Boolean.FALSE);
 	TupleSet focusGroup = vis.getGroup(Visualization.FOCUS_ITEMS);
@@ -285,7 +280,7 @@ public class polblogs extends JPrefuseApplet {
 	fsim.getForces()[0].setParameter(0, -8.2f);
 	fsim.getForces()[0].setParameter(1, -8.2f);
 	//fsim.getForces()[1].setParameter(0, -8.2f);
-	ActionList animate = new ActionList(Activity.INFINITY);
+	ActionList animate = new ActionList(Activity.DEFAULT_STEP_TIME);
 	animate.add(fdl);
 	animate.add(filler);
 	animate.add(new RepaintAction());
@@ -338,16 +333,16 @@ public class polblogs extends JPrefuseApplet {
 	display.addControlListener(new ControlAdapter(){
 		public void itemEntered(VisualItem item,MouseEvent e){
 			if (item instanceof NodeItem){
-			String name=(String)item.get("label");
-			name1.setText(name);
-			String aff=(String)item.get("value");
-			if (aff.equals("c")){
-				aff1.setText("Conservative");
+			String label=(String)item.get("label");
+			name1.setText(label);
+			int aff=Integer.parseInt((String)item.get("value"));
+			if (aff==0){
+				aff1.setText("Value:0");
 			}
-			else if (aff.equals("l")){
-				aff1.setText("Liberal");
+			else if (aff==1){
+				aff1.setText("Value:1");
 			}
-			else aff1.setText("Neutral");
+			else aff1.setText("Value:2");
 			}
 		}
 		public void itemExited(VisualItem item,MouseEvent e){
@@ -371,9 +366,9 @@ public class polblogs extends JPrefuseApplet {
 	
 	
 	
-	JTextField star=new JTextField("Star -- Conservative");
-	JTextField triangle =new JTextField("Triangle -- Liberal");
-	JTextField Circle=new JTextField("Circle -- Neutral");
+	JTextField star=new JTextField("Star --0");
+	JTextField triangle =new JTextField("Triangle -- 1");
+	JTextField Circle=new JTextField("Circle -- 2");
 	Box pf=new Box(BoxLayout.Y_AXIS);
 	pf.add(star);
 	pf.add(triangle);
@@ -483,21 +478,54 @@ public class polblogs extends JPrefuseApplet {
 		
 		//System.out.println("challll "+debug.getEdge(6, 7));
 		Scc m=new Scc(g);
-		m.dfs(debug);
+		m.dfs(g);
 		//System.out.println("yee "+ g.getNode(0).get(4));
-		Graph h=m.ulta(debug);
+		Graph h=m.ulta(g);
 		//System.out.println("lala "+h.getNode(0).get(4));
-		m.dfs2(h);
-		debug.addColumn("count", Integer.class);
+		Graph tutochal=m.dfs2(h);
+		g.addColumn("count", Integer.class);
 		//System.out.println(h.getNode(0).get(6));
-		for(int p=0;p<debug.getNodeCount();p++)
-			debug.getNode(p).set(6, (int)h.getNode(p).get(6));
-		Graph answer=m.func(debug);
+		for(int p=0;p<g.getNodeCount();p++)
+			g.getNode(p).set(6, (int)h.getNode(p).get(6));
+		Graph answer=m.func(g);
 		//Graph h=randomgenerator(g,label);
-
-		System.out.println("challll "+answer.getEdge(1,2));
+		//answer.
+		//System.out.println("challll "+answer.getEdge(1,2));
 		//System.out.println(answer.getEdge((int)g.getNode(8).get(6),(int)g.getNode(640).get(6)));
-		return (helper(g, label));
+		
+		Graph check=new Graph();
+		check.addColumn("label", String.class);
+		check.addColumn("idg", Integer.class);
+		check.addColumn("value", String.class);
+		check.addColumn("source", String.class);
+		check.addColumn("nofnodes", Integer.class);
+		check.addColumn("id",Integer.class);
+		answer.addColumn("idcheck",Integer.class);
+		int i=0;
+		for(int o=0;o<answer.getNodeCount();o++)
+		{
+			Iterator iter=answer.getNode(o).inNeighbors();
+			Iterator itera=answer.getNode(o).outNeighbors();
+			if(!iter.hasNext()&&(!itera.hasNext()));
+				//answer.removeNode(o);
+			else
+			{
+				check.addNode();
+				check.getNode(i).set(0, answer.getNode(o).get(0));
+				check.getNode(i).set(1, answer.getNode(o).get(1));
+				check.getNode(i).set(2, answer.getNode(o).get(2));
+				check.getNode(i).set(3, answer.getNode(o).get(3));
+				check.getNode(i).set(4, answer.getNode(o).get(4));
+				check.getNode(i).set(5, answer.getNode(o).get(5));
+				answer.getNode(o).set(6, i);
+				i++;
+			}
+		}
+		for(int lo=0;lo<(answer.getEdgeCount());lo++)
+			check.addEdge(((int)answer.getEdge(lo).getSourceNode().get(6)), ((int)answer.getEdge(lo).getTargetNode().get(6)));
+		System.out.println("sas" +check.getEdgeCount());
+		System.out.println("sas" +check.getNodeCount());
+		return (helper(tutochal, label));
 	}
  
 
