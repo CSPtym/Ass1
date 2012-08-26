@@ -31,7 +31,7 @@ public class BooksAnalysis {
 			}
 			if (denominator>0){
 				arr[i]=(double)(triads/2)/denominator;
-				//System.out.println(triad/2);
+				//System.out.println(triads/2);
 				}
 				else {arr[i]=0.0;}
 			sum+=arr[i];

@@ -146,15 +146,18 @@ public class polbooks extends JPrefuseApplet {
 		double[] B=new double[30];
 		double[] C=new double[30];
 		double[] D=new double[30];
-		 BooksAnalysis book=new  BooksAnalysis();
-		 System.out.println(book.triad(g).sum);
-		 	Table table=new Table();
+		Triad triad=new Triad();
+		System.out.println(triad.triad(g).sum);
+		 //BooksAnalysis book=new  BooksAnalysis();
+		 //System.out.println(book.triad(g).sum);
+		 /*	Table table=new Table();
 
 			table.addColumn("Graphs",String.class);
 			table.addColumn("Ratios", Double.class);
 			table.addColumn("Triads",Integer.class);
 			table.addColumn("Global Coefficients",Double.class);
 			table.addColumn("Local Coefficients",Double.class);
+			*/
 		/*	for(int i=0;i<30;i++)
 		{
 			Graph h=randomgenerator(g,label);
@@ -241,16 +244,17 @@ public class polbooks extends JPrefuseApplet {
 	
 	
 	public static JComponent helper(Graph g, String label) {
-		
-	
-	
 	final Visualization vis = new Visualization();
 	VisualGraph vg = vis.addGraph(graph, g);
-	caller(vg,g,label);
+	
 	g.addColumn("degree",Integer.class);
+	g.addColumn("id",Integer.class);
 	for (int i=0;i<g.getNodeCount();i++){
 		g.getNode(i).set("degree",g.getNode(i).getDegree());
+		g.getNode(i).set("id",i);
+		
 	}
+	caller(vg,g,label);
 	
 	vis.setValue(edges, null, VisualItem.INTERACTIVE, Boolean.FALSE);
 	TupleSet focusGroup = vis.getGroup(Visualization.FOCUS_ITEMS);
