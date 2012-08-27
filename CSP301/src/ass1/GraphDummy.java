@@ -60,15 +60,23 @@ class NodeRenderer2 extends ShapeRenderer{
         double y = item.getY();
         if ( Double.isNaN(y) || Double.isInfinite(y) )
             y = 0;
-        int degree=(int)item.get("degree");
-        double width = getBaseSize()+item.getSize()+degree;
+        //int degree=(int)item.get("degree");
+        double width = getBaseSize()+item.getSize();
         // Center the shape around the specified x and y
         if ( width > 1 ) {
             x = x-width/2;
             y = y-width/2;
         }
        
-        return star((float)x, (float)y,(float) width);
+        if (!item.canGet("value", String.class))
+			return ellipse(x, y, width, width);
+		Integer v = Integer.parseInt(item.get("value").toString());
+		if (v == 0)
+			return star((float) x, (float) y, (float) width);
+		else if (v == 1)
+			return triangle_left((float) x, (float) y, (float) width);
+		else
+			return ellipse(x, y, width, width);
        /* if (!item.canGet("value",String.class))
         	return ellipse(x, y, width, width);
         String v=(String)item.get("value");
@@ -138,8 +146,6 @@ public class GraphDummy extends JPanel {
     	DataColorAction filler = new DataColorAction(nodes, label,
     			Constants.NOMINAL, VisualItem.FILLCOLOR, palette);
     	
-    	//int [] shapes=new int[]{Constants.SHAPE_STAR,Constants.SHAPE_TRIANGLE_LEFT,Constants.SHAPE_ELLIPSE};
-    	//DataShapeAction shape=new DataShapeAction(nodes,"value", shapes);
     	filler.add("_fixed", ColorLib.rgb(255, 100, 100));// Giving red color to
     														// focussed node
     	filler.add("_highlight", ColorLib.rgb(255, 255, 153));// Giving yellow
@@ -149,7 +155,6 @@ public class GraphDummy extends JPanel {
     	
     	ActionList draw = new ActionList();
     	draw.add(filter);
-    	//draw.add(shape);
     	draw.add(filler);
     	draw.add(new ColorAction(nodes, VisualItem.TEXTCOLOR, ColorLib.rgb(0,
     			0, 0)));
@@ -164,7 +169,6 @@ public class GraphDummy extends JPanel {
     	ForceSimulator fsim = fdl.getForceSimulator();
     	fsim.getForces()[0].setParameter(0, -8.2f);
     	fsim.getForces()[0].setParameter(1, -8.2f);
-    	//fsim.getForces()[1].setParameter(0, -8.2f);
     	ActionList animate = new ActionList(Activity.INFINITY);
     	animate.add(fdl);
     	animate.add(filler);
@@ -189,7 +193,6 @@ public class GraphDummy extends JPanel {
     	display.addControlListener(new FocusControl(1));
     	display.addControlListener(new DragControl());
     	display.addControlListener(new PanControl());
-    	//display.addControlListener(new FinalControlListener());
     	display.addControlListener(new ZoomControl());
     	display.addControlListener(new WheelZoomControl());
     	display.addControlListener(new ZoomToFitControl());
@@ -239,7 +242,7 @@ public class GraphDummy extends JPanel {
     	// create a new JSplitPane to present the interface
     	JSplitPane split = new JSplitPane();
     	split.setLeftComponent(display);
-    	//split.setRightComponent(fpanel);
+    	split.setRightComponent(fpanel);
     	
     	//split.setTopComponent(opanel);
     	split.setOneTouchExpandable(true);
