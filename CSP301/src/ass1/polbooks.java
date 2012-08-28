@@ -65,7 +65,7 @@ import prefuse.visual.VisualGraph;
 import prefuse.visual.VisualItem;
 
 class FinalControlListener1 extends ControlAdapter implements Control{
-	
+
 	public void itemClicked(VisualItem item, MouseEvent e){
 		if(item instanceof NodeItem)
 		{	
@@ -77,14 +77,14 @@ class FinalControlListener1 extends ControlAdapter implements Control{
 			jpub.add("Degree:"+degree);
 			//jpub.add("Column:"+);
 			jpub.show(e.getComponent(),(int) item.getX(), (int) item.getY());
-		   
-		    	
+
+
 		}
 	}
-		
+
 }
 class NodeRenderer1 extends ShapeRenderer{
-	
+
 	@Override
 	protected Shape getRawShape(VisualItem item){
 		double x = item.getX();
@@ -118,14 +118,14 @@ public class polbooks extends JPrefuseApplet {
 	private static final String graph = "graph";
 	private static final String nodes = "graph.nodes";
 	private static final String edges = "graph.edges";
-	
+
 	public void init() {
 		UILib.setPlatformLookAndFeel();
 		JComponent graphview = demo("/polbooks.xml", "label");
 		this.getContentPane().add(graphview);	
-		
+
 	}
-	
+
 	public static JComponent demo(String datafile, String label) {
 		Graph g = null;
 		if (datafile == null) {
@@ -133,7 +133,7 @@ public class polbooks extends JPrefuseApplet {
 		} else {
 			try {
 				g = new GraphMLReader().readGraph(datafile);
-				
+
 			} catch (Exception e) {
 				e.printStackTrace();
 				System.exit(1);
@@ -141,49 +141,59 @@ public class polbooks extends JPrefuseApplet {
 		}
 		return demo(g, label);
 	}
-	public static void caller(VisualGraph vg,Graph g,String label){
-		int[] A=new int[30];
-		double[] B=new double[30];
-		double[] C=new double[30];
-		double[] D=new double[30];
-		 BooksAnalysis book=new  BooksAnalysis();
-		 System.out.println(book.triad(g).sum);
-		 	Table table=new Table();
+	public static void caller(Graph g,String label){
+		double[] A=new double[1000];
+		double[] B=new double[1000];
+		double[] C=new double[1000];
+		double[] D=new double[1000];
+		Undirectedlocal triad=new Undirectedlocal();
+		
+		//System.out.println(triad.triad(g).triad);
+		double localundi=triad.localcoeff(g);
+		System.out.println("Local Coefficient : "+localundi);
+		double triads=triad.triad();
+		System.out.println("Triads : "+triads);
+		double globalundi=triad.globalcoeff(g);
+		System.out.println("Global Coefficient : "+globalundi);
+		double polariser=triad.ratio(g);
+		System.out.println("Polarising Coefficient : "+polariser);
+		 Table table=new Table();
 
 			table.addColumn("Graphs",String.class);
 			table.addColumn("Ratios", Double.class);
-			table.addColumn("Triads",Integer.class);
+			table.addColumn("Triads",Double.class);
 			table.addColumn("Global Coefficients",Double.class);
 			table.addColumn("Local Coefficients",Double.class);
-		/*	for(int i=0;i<30;i++)
+
+			for(int i=0;i<1000;i++)
 		{
 			Graph h=randomgenerator(g,label);
-			A[i]=book.triad(h).triad;
-			B[i]=book.ratio(h);
-			C[i]=book.coefficient(h);
-			//System.out.println(C[i]);
-			D[i]=book.triad(h).sum;
-			System.out.println(D[i]);
-		}
-		*/
+			D[i]=triad.localcoeff(h);
+			A[i]=triad.triad();
+			B[i]=triad.ratio(h);
+			C[i]=triad.globalcoeff(h);
+			System.out.println(i);
+			//System.out.println(D[i]);
 		
-		/*for (int k=0;k<A.length;k++){
+
+
+		
 			int row=table.addRow();
-			table.set(row,"Graphs","Graph"+k);
-			table.set(row,"Ratios",B[k]);
-			table.set(row,"Triads",A[k]);
-			table.set(row,"Global Coefficients",C[k]);
-			table.set(row,"Local Coefficients", D[k]);
-		}*/
+			table.set(row,"Graphs","Graph"+i);
+			table.set(row,"Ratios",B[i]);
+			table.set(row,"Triads",A[i]);
+			table.set(row,"Global Coefficients",C[i]);
+			table.set(row,"Local Coefficients", D[i]);
 		
+
 		try{
 		//	FileWriter fstream = new FileWriter("out.txt");
 			//BufferedWriter out = new BufferedWriter(fstream);
-			
+
 			//FileOutputStream f = new FileOutputStream(new File("out1.txt"));
 			//OutputStream output = new FileOutputStream("out1.txt");
-			//CSVTableWriter writer=new CSVTableWriter();
-			//writer.writeTable(table,"out1.txt");
+			CSVTableWriter writer=new CSVTableWriter();
+			writer.writeTable(table,"out.csv");
 			/*String[] arr={"\"Graphs\""+",","\"Ratio\""+",","\"Triads\""};
 			for (int i=0;i<arr.length;i++){
 			out.write(arr[i]);
@@ -192,28 +202,30 @@ public class polbooks extends JPrefuseApplet {
 		}
 		catch(Exception e){
 			System.err.println("Error: " + e.getMessage());
-		
+
 	}
-	
+		}
 	}	
-	
-	
+
+
 	public static Graph randomgenerator(Graph g, String label)
 	{
 		int e=g.getEdgeCount();
 		int n=g.getNodeCount();
 		Graph h=new Graph();
-		
+
 		for(int i=0;i<n;i++)
 		{
 			h.addNode();
 		}
 		h.addColumn("label", String.class);
 		h.addColumn("value", String.class);
+		h.addColumn("id",Integer.class);
 		for(int i=0;i<n;i++)
 		{
 			h.getNode(i).set(0, g.getNode(i).get(0));
 			h.getNode(i).set(1, g.getNode(i).get(1));
+			h.getNode(i).set(2,i);
 		}
 		//System.out.println((n*(n-1)*(n-2))/6);
 	//	for(int i=0;i<e;i++)
@@ -227,31 +239,32 @@ public class polbooks extends JPrefuseApplet {
 			b=rn.nextInt(n);
 			h.addEdge(a,b);
 		}
-		
+
 		//helper(h,label);
 		return h;
-		
-		
-		
+
+
+
 		//System.out.println(g.getEdge(g.getNode(1), g.getNode(0)));
-		
+
 	}
-	
-	
-	
-	
+
+
+
+
 	public static JComponent helper(Graph g, String label) {
-		
-	
-	
 	final Visualization vis = new Visualization();
 	VisualGraph vg = vis.addGraph(graph, g);
-	caller(vg,g,label);
+
 	g.addColumn("degree",Integer.class);
+	g.addColumn("id",Integer.class);
 	for (int i=0;i<g.getNodeCount();i++){
 		g.getNode(i).set("degree",g.getNode(i).getDegree());
+		g.getNode(i).set("id",i);
+
 	}
-	
+	caller(g,label);
+
 	vis.setValue(edges, null, VisualItem.INTERACTIVE, Boolean.FALSE);
 	TupleSet focusGroup = vis.getGroup(Visualization.FOCUS_ITEMS);
 	focusGroup.addTupleSetListener(new TupleSetListener() {
@@ -265,7 +278,7 @@ public class polbooks extends JPrefuseApplet {
 			vis.run("draw");
 		}
 	});
-	
+
 	NodeRenderer1 rn=new NodeRenderer1();
 	vis.setRendererFactory(new DefaultRendererFactory(rn));
 
@@ -283,7 +296,7 @@ public class polbooks extends JPrefuseApplet {
 															// colors to
 															// it's
 															// neighbours
-	
+
 	ActionList draw = new ActionList();
 	draw.add(filter);
 	draw.add(filler);
@@ -294,9 +307,9 @@ public class polbooks extends JPrefuseApplet {
 	draw.add(new ColorAction(edges, VisualItem.STROKECOLOR, ColorLib.rgb(
 			232, 204, 204)));
 	ForceDirectedLayout fdl = new ForceDirectedLayout(graph);
-	
-	
-	
+
+
+
 	ForceSimulator fsim = fdl.getForceSimulator();
 	fsim.getForces()[0].setParameter(0, -8.2f);
 	fsim.getForces()[0].setParameter(1, -8.2f);
@@ -324,7 +337,7 @@ public class polbooks extends JPrefuseApplet {
 	display.addControlListener(new WheelZoomControl());
 	display.addControlListener(new ZoomToFitControl());
 	display.addControlListener(new NeighborHighlightControl());
-	
+
 	final JFastLabel name1=new JFastLabel();
 	name1.setPreferredSize(new Dimension(390, 30));
 	name1.setMaximumSize(new Dimension(390,30));
@@ -354,29 +367,29 @@ public class polbooks extends JPrefuseApplet {
 			}
 			else aff1.setText("Neutral");
 			}
-			
+
 		}
 		public void itemExited(VisualItem item,MouseEvent e){
 			aff1.setText(null);
 			name1.setText(info1);
 		}
 	});
-	
-	
-	
-	
-	
-	
-	
+
+
+
+
+
+
+
 	Box info = UILib.getBox(new Component[]{name1,aff1},false,0,2, 0);
 	info.setBorder(BorderFactory.createTitledBorder("Node Info"));
 	info.setAlignmentX((float)(0.4));
 	info.setAlignmentY((float)10.0);
 	info.setMaximumSize(new Dimension(420,60));
-	
-	
-	
-	
+
+
+
+
 	JTextField star=new JTextField("Star -- Conservative");
 	JTextField triangle =new JTextField("Triangle -- Liberal");
 	JTextField Circle=new JTextField("Circle -- Neutral");
@@ -384,7 +397,7 @@ public class polbooks extends JPrefuseApplet {
 	pf.add(star);
 	pf.add(triangle);
 	pf.add(Circle);
-	
+
 	pf.setBorder(BorderFactory.createTitledBorder("Values"));
 	pf.setMaximumSize(new Dimension(300, 30));
 	final JForcePanel fpanel = new JForcePanel(fsim);
@@ -405,38 +418,38 @@ public class polbooks extends JPrefuseApplet {
 	cf.setBorder(BorderFactory.createTitledBorder("Connectivity Filter"));
 
 	fpanel.add(cf);
-	
+
 	fpanel.add(pf);
 	fpanel.add(info);
-	
+
 	fpanel.add(Box.createVerticalGlue());
 	// create a new JSplitPane to present the interface
 	JSplitPane split = new JSplitPane();
 	split.setLeftComponent(display);
 	split.setRightComponent(fpanel);
-	
+
 	split.setOneTouchExpandable(true);
 	split.setContinuousLayout(false);
 	split.setDividerLocation(530);
 	split.setDividerLocation(800);
 	split.setResizeWeight(0.8);
-	
+
 	// position and fix the default focus node
 	NodeItem focus = (NodeItem) vg.getNode(0);
 	PrefuseLib.setX(focus, null, 800);
 	PrefuseLib.setY(focus, null, 400);
 	focusGroup.setTuple(focus);
-	
+
 	// now we run our action list and return
 	return split;
 }
-	
+
 	public static JComponent demo(Graph g, String label) {
 		// create a new, empty visualization for our data
-		
+
 
 		return (helper(g, label));
 	}
  
 
-} // end of class GraphView
+}

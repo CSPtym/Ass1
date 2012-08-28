@@ -8,12 +8,9 @@ import prefuse.data.tuple.TableNode;
 
 public class Scc {
 	static int[] exittime;
-	//static int n;
-	
-	
 	public Scc(Graph g) {
 		exittime = new int[g.getNodeCount()];
-		
+
 	}
 	static int count;
 	static int time = 0;
@@ -24,8 +21,6 @@ public class Scc {
 	public static void dfshelper(Graph g,int i)
 	{
 		time++;
-		//System.out.print(i + "-->");
-	//	System.out.println(i);
 		g.getNode(i).set(3, "g");
 		Iterator it = g.getNode(i).outNeighbors();
 		while (it.hasNext())
@@ -33,15 +28,12 @@ public class Scc {
 			 TableNode n = (TableNode) it.next();
 			 if(((String) n.get(3)).equals("w"))
 				 dfshelper(g,(int) n.get(5));
-			 
-			 //System.out.println(n.get(5));
 		}
 		time++;
 		g.getNode(i).set(3, "b");
-		//System.out.println(i + "-->" +time + "\n");
 		g.getNode(i).set(4, time);
 		exittime[index++]=i;
-		
+
 	}
 	public static void dfs(Graph g)
 	{
@@ -57,26 +49,19 @@ public class Scc {
 		{
 			while((i<g.getNodeCount())&&(g.getNode(i).get(3)!="w"))
 				{i++;}
-		//System.out.println("\n"+i + "-->");
 			if(i<g.getNodeCount())
 					{
 					dfshelper(g,i);
 					}
 		i++;
-	//	System.out.println(i);
-	//	System.out.println("lo");
-		}
-		for(int la=0;la<index;la++)
-		{
-		//	System.out.println(exittime[la]);
 		}
 	}
-	
+
 	public static Graph ulta(Graph g)
 	{
 		int e=g.getEdgeCount();
-		Graph h=new Graph();
-		
+		Graph h=new Graph(true);
+
 		int n=g.getNodeCount();
 		for(int i=0;i<n;i++)
 		{
@@ -100,48 +85,37 @@ public class Scc {
 		}
 		for(int i=0;i<e;i++)
 			{h.addEdge((int) g.getEdge(i).getTargetNode().get(5),(int) g.getEdge(i).getSourceNode().get(5));}
-			
-		//System.out.print(h.getEdge(6, 7));
-		
-		//helper(h,label);
 		return h;
 	}
-	
-	
-	
+
+
+
 	public static Graph dfs2(Graph g)
 	{
-		
+
 		int n=g.getNodeCount();
 		int i=n-1;
 		g.addColumn("count", Integer.class);
+		g.addColumn("khudkiid", Integer.class);
 		count=0;
 		while(i>=0)
 		{
-			//System.out.println("yeee");
-			//System.out.println(g.getNode(exittime[i]).get(3));
 			while((i>=0)&&(!(g.getNode(exittime[i]).get(3).equals("b"))))
-		{
-			//	System.out.println("yeee");
-
-				i--;
-		}
+			i--;
+		
 			if(i>=0)
-			{	
-				
-				//System.out.println(i);
-				//System.out.println("\n"+i + "-->");
-				
+			{
 				koitobachao=0;
-				array[count]=new Graph();
+				array[count]=new Graph(true);
 				array[count].addColumn("label", String.class);
 				array[count].addColumn("value", String.class);
 				array[count].addColumn("source", String.class);
-	
+
 				array[count].addColumn("colour", String.class);
 				array[count].addColumn("exittime", Integer.class);
 				array[count].addColumn("id", Integer.class);
 				array[count].addColumn("count", Integer.class);
+				//array[count].addColumn("khudkiid", Integer.class);
 				array[count].addNode();
 				//specifications
 				array[count].getNode(0).set(0, g.getNode(exittime[i]).get(0));
@@ -151,17 +125,16 @@ public class Scc {
 				array[count].getNode(0).set(4, g.getNode(i).get(4));
 				array[count].getNode(0).set(5, g.getNode(exittime[i]).get(5));
 				array[count].getNode(0).set(6, 0);
-				
+				g.getNode(exittime[i]).set(6, count);
+				g.getNode(exittime[i]).set(7, 0);
 				dfs2helper(g,exittime[i],count);
-				array[count].addEdge(0, koitobachao-1);
-		//		System.out.print(b  + "-- >");
 				array2[count]=koitobachao;
 				i--;
 				count++;
 			}
-			
+
 		}
-		
+
 		System.out.println(count);
 		System.out.println("n="+n);
 		int k=0;
@@ -170,26 +143,16 @@ public class Scc {
 		{
 			if(array2[k]==3)
 				break;
-			
-		/*for(int j=0;j<array2[k];j++)
-		System.out.print(array[k].getNode(j).get(5)+"-->");
-		System.out.println();*/
 		}
-		for(int ke=0;ke<500;ke++)
-		System.out.println( array[524].getEdge(ke));
-		return array[524];
-		
-		
-		//System.out.println("ye dheko "+g.getNode(2).get(6));
-		//return g;
+		return array[k];
 	}
+	static int u=0;
 	public static void dfs2helper(Graph g,int i,int count)
 	{
-		
+
 		koitobachao++;
-		
+
 		g.getNode(i).set(3, "w");
-		g.getNode(i).set(6, count);
 		Iterator it = g.getNode(i).outNeighbors();
 		while (it.hasNext())
 		{
@@ -204,17 +167,33 @@ public class Scc {
 					array[count].getNode(koitobachao).set(4, n.get(4));
 					array[count].getNode(koitobachao).set(5, n.get(5));
 					array[count].getNode(koitobachao).set(6, count);
+					//array[count].getNode(koitobachao).set(7, koitobachao);
 					g.getNode((int)n.get(5)).set(6,count);
-					
-				 array[count].addEdge(koitobachao,koitobachao-1 );
+					g.getNode((int)n.get(5)).set(7, koitobachao);
+					  Iterator iterate=n.outNeighbors();
+					  while(iterate.hasNext())
+					  {
+						  TableNode ne=(TableNode) iterate.next();
+						  if((ne.get(6)!=null)&&((int)g.getNode((int)ne.get(5)).get(6)==count))
+							  array[count].addEdge(array[count].getNode((int)ne.get(7)),array[count].getNode((int)n.get(7)));  
+					  }
+
+					  Iterator iterat=n.inNeighbors();
+					  while(iterat.hasNext())
+					  {
+						  TableNode ne=(TableNode) iterat.next();
+						  if((ne.get(6)!=null)&&((int)g.getNode((int)ne.get(5)).get(6)==count))
+							  array[count].addEdge(array[count].getNode((int)n.get(7)) ,array[count].getNode((int)ne.get(7))); 
+
+					  }	  		  
 				 dfs2helper(g,(int) n.get(5),count);
 			 }
 		}
 	}
 	public static Graph func(Graph g)
 	{
-		Graph answer=new Graph();
-		
+		Graph answer=new Graph(true);
+
 		answer.addColumn("label", String.class);
 		answer.addColumn("idg", Integer.class);
 		answer.addColumn("value", String.class);
@@ -242,15 +221,6 @@ public class Scc {
 					if(i!=(int)n.get(6))
 					answer.addEdge((int)n.get(6),i);
 				}
-				/*Iterator itr=g.getNode((int)array[i].getNode(0).get(5)).outNeighbors();
-				while(itr.hasNext())
-				{
-					TableNode n=(TableNode) itr.next();
-				
-					//System.out.println(n  + ":" + n.get(6));
-					if(i!=(int)n.get(6))
-					answer.addEdge(i,(int)n.get(6));
-				}*/
 			}
 			else
 			{
@@ -269,7 +239,7 @@ public class Scc {
 				answer.getNode(i).set(1, idg);
 				answer.getNode(i).set(2, "2");
 				answer.getNode(i).set(4, array2[i]);
-				
+
 				for(int k=0;k<array2[i];k++)
 				{
 					Iterator it=g.getNode((int)array[i].getNode(k).get(5)).inNeighbors();
@@ -279,22 +249,68 @@ public class Scc {
 						if(i!=(int)n.get(6))
 						answer.addEdge((int)n.get(6),i);
 					}
-				/*	Iterator itr=g.getNode((int)array[i].getNode(k).get(5)).outNeighbors();
-					while(itr.hasNext())
-					{
-						TableNode n=(TableNode) itr.next();
-						if(i!=(int)n.get(6))
-						answer.addEdge(i,(int)n.get(6));
-					}*/
 				}
-				
+
 			}
-			
+
 		}
-		// 524 ko dhek lena
-		//System.out.println(answer.getNodeCount());
-		System.out.println("edges = "+answer.getEdgeCount());
 		return answer;
-	} 
-	
+	}
+	static Graph[] arr;
+	public static Graph[] connectedcomponent()
+	{
+		return array;
+	}
+	public static Object[] Banja (Graph  g)
+	{
+		dfs(g);
+		Graph h=ulta(g);
+		Graph tutochal=dfs2(h);
+		g.addColumn("count", Integer.class);
+		g.addColumn("khudkiid", Integer.class);
+		for(int p=0;p<g.getNodeCount();p++)
+		{
+			g.getNode(p).set(6, (int)h.getNode(p).get(6));
+			g.getNode(p).set(7, (int)h.getNode(p).get(7));
+		}
+		Graph answer=func(g);
+
+		Graph check=new Graph(true);
+		check.addColumn("label", String.class);
+		check.addColumn("idg", Integer.class);
+		check.addColumn("value", String.class);
+		check.addColumn("source", String.class);
+		check.addColumn("nofnodes", Integer.class);
+		check.addColumn("id",Integer.class);
+		answer.addColumn("idcheck",Integer.class);
+		int i=0;
+
+		 array=connectedcomponent();
+		arr=new Graph[1000];
+		for(int o=0;o<answer.getNodeCount();o++)
+		{
+			Iterator iter=answer.getNode(o).inNeighbors();
+			Iterator itera=answer.getNode(o).outNeighbors();
+			if(!iter.hasNext()&&(!itera.hasNext()));
+				//answer.removeNode(o);
+			else
+			{
+				check.addNode();
+				check.getNode(i).set(0, answer.getNode(o).get(0));
+				check.getNode(i).set(1, answer.getNode(o).get(1));
+				check.getNode(i).set(2, answer.getNode(o).get(2));
+				check.getNode(i).set(3, answer.getNode(o).get(3));
+				check.getNode(i).set(4, answer.getNode(o).get(4));
+				check.getNode(i).set("id", i);
+				answer.getNode(o).set(6, i);
+				arr[i]=array[o];
+				i++;
+			}
+		}
+
+		for(int lo=0;lo<(answer.getEdgeCount());lo++)
+			check.addEdge(((int)answer.getEdge(lo).getSourceNode().get(6)), ((int)answer.getEdge(lo).getTargetNode().get(6)));
+
+		return new Object[]{check,arr};
+	}
 }
