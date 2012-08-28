@@ -141,43 +141,44 @@ public class polbooks extends JPrefuseApplet {
 		}
 		return demo(g, label);
 	}
-	public static void caller(VisualGraph vg,Graph g,String label){
-		int[] A=new int[30];
-		double[] B=new double[30];
-		double[] C=new double[30];
-		double[] D=new double[30];
+	public static void caller(Graph g,String label){
+		int[] A=new int[10000];
+		double[] B=new double[10000];
+		double[] C=new double[10000];
+		double[] D=new double[10000];
 		Triad triad=new Triad();
-		System.out.println(triad.triad(g).sum);
-		 //BooksAnalysis book=new  BooksAnalysis();
-		 //System.out.println(book.triad(g).sum);
-		 /*	Table table=new Table();
+		System.out.println(triad.triad(g).triad);
+		
+		 BooksAnalysis book=new  BooksAnalysis();
+		 System.out.println(book.triad(g).sum);
+		 Table table=new Table();
 
 			table.addColumn("Graphs",String.class);
 			table.addColumn("Ratios", Double.class);
 			table.addColumn("Triads",Integer.class);
 			table.addColumn("Global Coefficients",Double.class);
 			table.addColumn("Local Coefficients",Double.class);
-			*/
-		/*	for(int i=0;i<30;i++)
+			
+			for(int i=0;i<10000;i++)
 		{
 			Graph h=randomgenerator(g,label);
 			A[i]=book.triad(h).triad;
 			B[i]=book.ratio(h);
-			C[i]=book.coefficient(h);
-			//System.out.println(C[i]);
+			C[i]=triad.coefficient(h);
+			System.out.println(i);
 			D[i]=book.triad(h).sum;
-			System.out.println(D[i]);
+			//System.out.println(D[i]);
 		}
-		*/
 		
-		/*for (int k=0;k<A.length;k++){
+		
+		for (int k=0;k<A.length;k++){
 			int row=table.addRow();
 			table.set(row,"Graphs","Graph"+k);
 			table.set(row,"Ratios",B[k]);
 			table.set(row,"Triads",A[k]);
 			table.set(row,"Global Coefficients",C[k]);
 			table.set(row,"Local Coefficients", D[k]);
-		}*/
+		}
 		
 		try{
 		//	FileWriter fstream = new FileWriter("out.txt");
@@ -185,8 +186,8 @@ public class polbooks extends JPrefuseApplet {
 			
 			//FileOutputStream f = new FileOutputStream(new File("out1.txt"));
 			//OutputStream output = new FileOutputStream("out1.txt");
-			//CSVTableWriter writer=new CSVTableWriter();
-			//writer.writeTable(table,"out1.txt");
+			CSVTableWriter writer=new CSVTableWriter();
+			writer.writeTable(table,"out.csv");
 			/*String[] arr={"\"Graphs\""+",","\"Ratio\""+",","\"Triads\""};
 			for (int i=0;i<arr.length;i++){
 			out.write(arr[i]);
@@ -213,10 +214,12 @@ public class polbooks extends JPrefuseApplet {
 		}
 		h.addColumn("label", String.class);
 		h.addColumn("value", String.class);
+		h.addColumn("id",Integer.class);
 		for(int i=0;i<n;i++)
 		{
 			h.getNode(i).set(0, g.getNode(i).get(0));
 			h.getNode(i).set(1, g.getNode(i).get(1));
+			h.getNode(i).set(2,i);
 		}
 		//System.out.println((n*(n-1)*(n-2))/6);
 	//	for(int i=0;i<e;i++)
@@ -254,7 +257,7 @@ public class polbooks extends JPrefuseApplet {
 		g.getNode(i).set("id",i);
 		
 	}
-	caller(vg,g,label);
+	caller(g,label);
 	
 	vis.setValue(edges, null, VisualItem.INTERACTIVE, Boolean.FALSE);
 	TupleSet focusGroup = vis.getGroup(Visualization.FOCUS_ITEMS);

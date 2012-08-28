@@ -16,7 +16,7 @@ class Tuple1 {
 public class Triad {
 	static int triad = 0;
 
-	public Tuple1 triad(Graph g) {
+	public static Tuple1 triad(Graph g) {
 		int count = g.getNodeCount();
 		double[] arr = new double[count];
 		double sum = 0;
@@ -24,7 +24,7 @@ public class Triad {
 		for (int hashset = 0; hashset < count; hashset++) {
 			hash[hashset] = new HashSet();
 		}
-		int triads[] = new int[count];
+		
 		for (int nodeid = 0; nodeid < count; nodeid++) {
 			int neighbours = g.getNode(nodeid).getDegree();
 			double denominator = (double) (neighbours) * (neighbours - 1) / 2;
@@ -34,27 +34,11 @@ public class Triad {
 				if (nodeid < Integer.parseInt(neighbour.get("id").toString())) {
 					HashSet copy = new HashSet(hash[nodeid]);
 					copy.retainAll(hash[Integer.parseInt(neighbour.get("id").toString())]);	
-					triads[nodeid]+=copy.size();
-					triads[Integer.parseInt(neighbour.get("id").toString())]+=copy.size();
-					Iterator<Node> i = copy.iterator();
-					while (i.hasNext())
-					{
-						Node temp =(Node)i.next();
-						triads[Integer.parseInt(temp.get("id").toString())]++;
-					}
+					
 					triad += copy.size();
 					hash[(Integer.parseInt(neighbour.get("id").toString()))].add(g.getNode(nodeid));
 				}
 			}
-			
-			if (denominator > 0) {
-				arr[nodeid] = (double) (triads[nodeid]) / denominator;
-				System.out.print(triads[nodeid]+" ");
-				System.out.println(triad);
-			} else {
-				arr[nodeid] = 0.0;
-			}
-			sum += arr[nodeid];
 		}
 		sum = (double) sum / (double) count;
 		Tuple1 p = new Tuple1();
@@ -62,6 +46,14 @@ public class Triad {
 		p.sum = sum;
 		return p;
 
+	}
+	public static double coefficient(Graph g){
+		int n=g.getNodeCount();
+		double d=n*(n-1)*(n-2)/6;
+		if (d>0)
+			return (double)((double)(triad(g).triad))/d;
+		else
+			return 0;
 	}
 
 }
