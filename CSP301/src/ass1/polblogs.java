@@ -67,21 +67,7 @@ import prefuse.visual.NodeItem;
 import prefuse.visual.VisualGraph;
 import prefuse.visual.VisualItem;
 
-/*class FinalControlListener extends ControlAdapter implements Control {
 
-	public void itemClicked(VisualItem item, MouseEvent e) {
-		if (item instanceof NodeItem) {
-			JFrame frame = new JFrame("Prefuse");
-			frame.setBounds(0, 0, 400, 300);
-			
-			JPanel jpan = new GraphDummy(p, "babloo");
-			frame.getContentPane().add(jpan);
-			frame.setVisible(true);
-
-		}
-	}
-
-}*/
 
 class NodeRenderer extends ShapeRenderer {
 	@Override
@@ -93,11 +79,11 @@ class NodeRenderer extends ShapeRenderer {
 		if (Double.isNaN(y) || Double.isInfinite(y))
 			y = 0;
 		Integer value = (Integer) item.get("nofnodes");
-		double width = getBaseSize() + item.getSize() + (1.2*value);
+		double width = getBaseSize() + item.getSize() + (6*value);
 		// Center the shape around the specified x and y
 		if (width > 1) {
-			x = x - width / 2;
-			y = y - width / 2;
+			x = x - width / 25;
+			y = y - width / 25;
 		}
 		if (!item.canGet("value", String.class))
 			return ellipse(x, y, width, width);
@@ -108,10 +94,10 @@ class NodeRenderer extends ShapeRenderer {
 			return triangle_left((float) x, (float) y, (float) width);
 		else if ((int)item.get("id")==257)
 		{
-			return ellipse(x,y,700.0,800.0);
+			return ellipse(x,y,550.0,550.0);
 
-		}
-		else 
+		} 
+		else  
 			return ellipse(x, y, width, width);
 		// to be changed later according to the values of the new node
 	}
@@ -132,9 +118,6 @@ public class polblogs extends JPrefuseApplet {
 
 		this.getContentPane().add(graphview);
 	}
-
-
-
 	public static JComponent demo(String datafile, String label) {
 		Graph g = null;
 		if (datafile == null) {
@@ -217,56 +200,8 @@ public class polblogs extends JPrefuseApplet {
 	}	
 
 
-	public static void triad(Graph g) {
-		int n = g.getNodeCount();
 
-		int triad = 0;
-		for (int i = 0; i < n; i++)
-			for (int j = 0; j < n; j++)
-				for (int k = 0; k < n; k++)
-					if (((g.getEdge(g.getNode(i), g.getNode(j)) != null) | (g
-							.getEdge(g.getNode(j), g.getNode(i)) != null))
-							&& ((g.getEdge(g.getNode(j), g.getNode(k)) != null) | (g
-									.getEdge(g.getNode(k), g.getNode(j)) != null))
-							&& ((g.getEdge(g.getNode(k), g.getNode(i)) != null) | (g
-									.getEdge(g.getNode(i), g.getNode(k)) != null)))
-						triad++;
-
-		triad /= 3;
-		System.out.println("triad= " + triad);
-	}
-
-	/*
-	 * public static void ratio(Graph g) {
-	 * 
-	 * double polariser=0.; int e=g.getEdgeCount(); int n=g.getNodeCount();
-	 * for(int i=0;i<e;i++) if(g.getNode((int)
-	 * g.getKey(g.getSourceNode(i))).get(1).equals(g.getNode((int)
-	 * g.getKey(g.getTargetNode(i))).get(1)) ) polariser++;
-	 * 
-	 * System.out.println("polariser= "+polariser); //int nc2=(n*(n-1))/2;
-	 * double ratio=polariser/e; System.out.println("ratio="+ratio); }
-	 * 
-	 * public static Graph randomgenerator(Graph g, String label) { int
-	 * e=g.getEdgeCount(); int n=g.getNodeCount(); Graph h=new Graph();
-	 * 
-	 * for(int i=0;i<n;i++) { h.addNode(); } h.addColumn("label", String.class);
-	 * h.addColumn("value", String.class); for(int i=0;i<n;i++) {
-	 * h.getNode(i).set(0, g.getNode(i).get(0)); h.getNode(i).set(1,
-	 * g.getNode(i).get(1)); }
-	 * 
-	 * Random rn=new Random(); for(int i=0;i<e;i++) { int a=rn.nextInt(n); int
-	 * b=rn.nextInt(n); while(b==a) b=rn.nextInt(n); h.addEdge(a,b); }
-	 * 
-	 * 
-	 * return h;
-	 * 
-	 * 
-	 * 
-	 * //System.out.println(g.getEdge(g.getNode(1), g.getNode(0)));
-	 * 
-	 * }
-	 */
+	 
 	static Graph[] arr;
 	public static Graph randomgenerator(Graph g, String label)
 	{
@@ -383,26 +318,33 @@ public class polblogs extends JPrefuseApplet {
 		final GraphDistanceFilter filter = new GraphDistanceFilter(graph, hops);
 
 		int[] palette = new int[] { ColorLib.rgba(255,0,102,150),
-				ColorLib.rgba(102,0,255,200), ColorLib.rgba(255,255,204,200) };
+				ColorLib.rgba(102,0,255,200), ColorLib.rgba(194,153,194,100) };
 		// map nominal data values to colors using our provided palette
 		DataColorAction filler = new DataColorAction(nodes, "value",
 				Constants.NOMINAL, VisualItem.FILLCOLOR, palette);
-		int[] color = new int[] { ColorLib.rgb(61,0,153),
-				ColorLib.rgb(26, 255, 0), ColorLib.rgb(200, 180, 255) };
+		int[] color = new int[] { ColorLib.rgb(41,0,102),
+				ColorLib.rgb(26, 255, 0), ColorLib.rgb(204,204,163) };
 		DataColorAction strokecolor = new DataColorAction(nodes, "value",
 				Constants.NOMINAL, VisualItem.STROKECOLOR, color);
-
+		int[] color1 = new int[] {ColorLib.rgb(204,204,208)};
 		DataColorAction edgecolor = new DataColorAction(edges, "value",
-				Constants.NOMINAL, VisualItem.STROKECOLOR, color);
-		filler.add("_fixed", ColorLib.rgba(255, 100, 100, 0));// Giving red
+				Constants.NOMINAL, VisualItem.STROKECOLOR, color1);
+
+
+
+
+
+		filler.add("_fixed", ColorLib.rgba(200,0,0,0));// Giving red
 																// color to
 																// focussed node
-		filler.add("_highlight", ColorLib.rgb(255, 255, 153));// Giving yellow
+		filler.add("_highlight", ColorLib.rgba(153,255,51,100));// Giving yellow
 																// colors to
 																// it's
 																// neighbours
-		strokecolor.add("_highlight", ColorLib.rgb(0, 0, 0));
-		edgecolor.add("_highlight", ColorLib.rgb(0, 0, 0));
+
+		strokecolor.add("_highlight", ColorLib.rgba(0, 0, 0,100));
+
+		edgecolor.add("_highlight", ColorLib.rgb(0,0,0));
 
 		ActionList draw = new ActionList();
 		draw.add(filter);
@@ -414,7 +356,7 @@ public class polblogs extends JPrefuseApplet {
 		// draw.add(new ColorAction(nodes, VisualItem.STROKECOLOR,
 		// ColorLib.rgba(131,170,241,150)));
 		draw.add(new ColorAction(edges, VisualItem.FILLCOLOR, ColorLib
-				.gray(200)));
+				.rgb(90,90,90)));
 		draw.add(new ColorAction(edges, VisualItem.STROKECOLOR, ColorLib.rgb(
 				232, 204, 204)));
 		ForceDirectedLayout fdl = new ForceDirectedLayout(graph);
@@ -423,7 +365,7 @@ public class polblogs extends JPrefuseApplet {
 		fsim.getForces()[0].setParameter(0, -8.2f);
 		fsim.getForces()[0].setParameter(1, -8.2f);
 		// fsim.getForces()[1].setParameter(0, -8.2f);
-		ActionList animate = new ActionList(Activity.INFINITY);
+		ActionList animate = new ActionList(30000);
 		animate.add(fdl);
 		animate.add(filler);
 		animate.add(strokecolor);
@@ -462,38 +404,26 @@ public class polblogs extends JPrefuseApplet {
 
 		// create a panel for editing force values
 
-		final JFastLabel name1 = new JFastLabel();
-		name1.setPreferredSize(new Dimension(390, 30));
-		name1.setMaximumSize(new Dimension(390, 30));
-		name1.setVerticalAlignment(SwingConstants.TOP);
 
-		name1.setBorder(BorderFactory.createEmptyBorder(3, 0, 0, 0));
-		name1.setFont(FontLib.getFont("Tahoma", Font.PLAIN, 12));
-		final JFastLabel aff1 = new JFastLabel();
-		aff1.setPreferredSize(new Dimension(390, 30));
-		aff1.setMaximumSize(new Dimension(390, 30));
-		aff1.setVerticalAlignment(SwingConstants.TOP);
-		aff1.setBorder(BorderFactory.createEmptyBorder(3, 0, 0, 0));
-		aff1.setFont(FontLib.getFont("Tahoma", Font.PLAIN, 16));
 		final StrokeLib stroke = new StrokeLib();
 		display.addControlListener(new ControlAdapter() {
 			public void itemEntered(VisualItem item, MouseEvent e) {
 				if (item instanceof NodeItem) {
 					String label = (String) item.get("label");
-					name1.setText(label);
+
 					BasicStroke p = stroke.getStroke(2);
 					item.setStroke(p);
 					int aff = Integer.parseInt((String) item.get("value"));
 					if (aff == 0) {
-						aff1.setText("Value:0");
+
 						item.setStrokeColor(ColorLib.rgba(131, 170, 241, 250));
 						item.setStroke(p);
 					} else if (aff == 1) {
-						aff1.setText("Value:1");
+
 						item.setStrokeColor(ColorLib.rgba(140, 255, 25, 200));
 						item.setStroke(p);
 					} else {
-						aff1.setText("Value:2");
+
 						item.setStrokeColor(ColorLib.rgb(225, 195, 225));
 						item.setStroke(p);
 					}
@@ -505,8 +435,8 @@ public class polblogs extends JPrefuseApplet {
 				BasicStroke p = stroke.getStroke(0);
 				item.setStroke(p);
 				item.setStrokeColor(ColorLib.rgba(131, 170, 241, 150));
-				aff1.setText(null);
-				name1.setText(null);
+
+
 			}
 		});
 
@@ -525,12 +455,7 @@ public class polblogs extends JPrefuseApplet {
 				}
 			}
 		});
-		Box info = UILib
-				.getBox(new Component[] { name1, aff1 }, false, 0, 2, 0);
-		info.setBorder(BorderFactory.createTitledBorder("Node Info"));
-		info.setAlignmentX((float) (0.4));
-		info.setAlignmentY((float) 10.0);
-		info.setMaximumSize(new Dimension(420, 60));
+
 
 		JTextField star = new JTextField("Star --0");
 		JTextField triangle = new JTextField("Triangle -- 1");
@@ -562,7 +487,7 @@ public class polblogs extends JPrefuseApplet {
 		fpanel.add(cf);
 
 		fpanel.add(pf);
-		fpanel.add(info);
+
 
 		fpanel.add(Box.createVerticalGlue());
 
@@ -591,66 +516,7 @@ public class polblogs extends JPrefuseApplet {
 	static Graph[] array;
 
 	public static JComponent demo(Graph g, String label) {
-		// create a new, empty visualization for our data
-
-
-
-		/*Graph debug=new Graph();
-		for(int i=0;i<8;i++)
-		debug.addNode();
-		debug.addColumn("label", String.class);
-		debug.addColumn("value", String.class);
-		debug.addColumn("source", String.class);
-		debug.getNode(0).set(0, "a");
-		debug.getNode(1).set(0, "b");
-		debug.getNode(2).set(0, "c");
-		debug.getNode(3).set(0, "d");
-		debug.getNode(4).set(0, "e");
-		debug.getNode(5).set(0, "f");
-		debug.getNode(6).set(0, "g");
-		debug.getNode(7).set(0, "h");
 		
-		debug.getNode(0).set(1, "a");
-		debug.getNode(1).set(1, "b");
-		debug.getNode(2).set(1, "c");
-		debug.getNode(3).set(1, "d");
-		debug.getNode(4).set(1, "e");
-		debug.getNode(5).set(1, "f");
-		debug.getNode(6).set(1, "g");
-		debug.getNode(7).set(1, "h");
-		
-		debug.getNode(0).set(2, "a");
-		debug.getNode(1).set(2, "b");
-		debug.getNode(2).set(2, "c");
-		debug.getNode(3).set(2, "d");
-		debug.getNode(4).set(2, "e");
-		debug.getNode(5).set(2, "f");
-		debug.getNode(6).set(2, "g");
-		debug.getNode(7).set(2, "h");
-
-		debug.addEdge(0, 1);
-		debug.addEdge(1, 2);
-		debug.addEdge(2, 3);
-		debug.addEdge(3, 2);
-		debug.addEdge(3, 7);
-		debug.addEdge(7, 3);
-		debug.addEdge(7, 6);
-		debug.addEdge(2, 6);
-		debug.addEdge(6, 5);
-		debug.addEdge(5, 6);
-		debug.addEdge(1, 5);
-		debug.addEdge(4, 5);
-		debug.addEdge(4, 0);
-		debug.addEdge(1, 4);*/
-
-		//System.out.println("challll "+debug.getEdge(6, 7));
-
-
-
-
-		//System.out.println("sas" +check.getEdgeCount());
-		//System.out.println("sas" +check.getNodeCount());
-
 		return (helper(g, label));
 	}
 } // end of class GraphView
