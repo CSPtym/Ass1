@@ -12,8 +12,15 @@ import prefuse.data.tuple.TableNode;
 public class Directedtriad {
 @SuppressWarnings("unchecked")
 static double noftriads=0;
+static double nofstriads=0;
+static double nof2striads=0;
+static double nofdtriads=0;
 public static double localcoeff(Graph g)
 {
+	noftriads=0;
+	nofstriads=0;
+	nof2striads=0;
+	nofdtriads=0;
 	int n=(int)g.getNodeCount();
 	double [] triads=new double[n];
 	double [] localcoefficients=new double[n];
@@ -40,6 +47,10 @@ public static double localcoeff(Graph g)
                     while (i.hasNext()) {
                         TableNode temp = (TableNode) i.next();
                         triads[(int) temp.get("id")]+=1;
+                        if((s.get("value").equals(t.get("value")))&&(t.get("value").equals(temp.get("value"))))
+                        nofstriads++;
+                        
+                        
                     }
                    // ((HashSet<Node>) t.get("close")).add((Node) s);
                     ((HashSet) t.get("close")).add(s);
@@ -86,12 +97,31 @@ public static double triad()
 {
 	return noftriads;
 }
+
+
+public static double striad()
+{
+	return nofstriads;
+}
+
+public static double s2triad()
+{
+	return nofstriads;
+}
+
+public static double dtriad()
+{
+	return nofdtriads;
+}
+
 public static double globalcoeff(Graph g)
 {
 	//System.out.println("OO teriii");
 	int n=g.getNodeCount();
-	double neighbours=n*(n-1)*(n-2)/6;
-	//System.out.println(n*(n-1)*(n-2)/6);
+	long ne=n;
+	long neighbours=ne*(ne-1)*(ne-2)/6;
+	
+	System.out.println(neighbours);
 	if (neighbours>0)
 		return noftriads/neighbours;
 	else return 0;

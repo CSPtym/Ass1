@@ -147,17 +147,28 @@ public class polbooks extends JPrefuseApplet {
 		double[] C=new double[1000];
 		double[] D=new double[1000];
 		Undirectedlocal triad=new Undirectedlocal();
-		
+
 		//System.out.println(triad.triad(g).triad);
 		double localundi=triad.localcoeff(g);
 		System.out.println("Local Coefficient : "+localundi);
 		double triads=triad.triad();
 		System.out.println("Triads : "+triads);
+		
+		double striads = triad.striad();
+		System.out.println("Striads : " + striads);
+		
+		double s2triads = triad.s2triad();
+		System.out.println("2Striads : " + s2triads);
+		
+		double dtriads = triad.striad();
+		System.out.println("dStriads : " + dtriads);
+		
+		
 		double globalundi=triad.globalcoeff(g);
 		System.out.println("Global Coefficient : "+globalundi);
 		double polariser=triad.ratio(g);
 		System.out.println("Polarising Coefficient : "+polariser);
-		 Table table=new Table();
+	/*	 Table table=new Table();
 
 			table.addColumn("Graphs",String.class);
 			table.addColumn("Ratios", Double.class);
@@ -199,12 +210,12 @@ public class polbooks extends JPrefuseApplet {
 			out.write(arr[i]);
 			}
 			out.close();*/
-		}
+	/*	}
 		catch(Exception e){
 			System.err.println("Error: " + e.getMessage());
 
 	}
-		}
+		}*/
 	}	
 
 
@@ -255,7 +266,16 @@ public class polbooks extends JPrefuseApplet {
 	public static JComponent helper(Graph g, String label) {
 	final Visualization vis = new Visualization();
 	VisualGraph vg = vis.addGraph(graph, g);
-
+	Differentedges ded=new Differentedges();
+	int [] dedges=ded.dedges(g);
+	int index=ded.index();
+	System.out.println(g.getEdgeCount());
+	for(int i=0;i<index;i++)
+	{
+		System.out.println(dedges[i]);
+	}
+	
+	
 	g.addColumn("degree",Integer.class);
 	g.addColumn("id",Integer.class);
 	for (int i=0;i<g.getNodeCount();i++){

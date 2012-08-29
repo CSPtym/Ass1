@@ -12,8 +12,15 @@ import prefuse.data.tuple.TableNode;
 
 public class Undirectedlocal {
 	static double triad=0;
+	static double nofstriads=0;
+	static double nof2striads=0;
+	static double nofdtriads=0;
 public static double localcoeff(Graph g)
 {
+	triad=0;
+	nofstriads=0;
+	nof2striads=0;
+	nofdtriads=0;
 	int n=(int)g.getNodeCount();
 	double [] triads=new double[n];
 	double [] nc2=new double[n];
@@ -48,7 +55,12 @@ public static double localcoeff(Graph g)
                     while (i.hasNext()) {
                         TableNode temp = (TableNode) i.next();
                         triads[(int) temp.get("id")]+=1;
-                       // temp.setInt("Triangles", temp.getInt("Triangles") + 1);
+                        if((s.get("value").equals(t.get("value")))&&(t.get("value").equals(temp.get("value"))))
+                            nofstriads++;
+                        if((s.get("value").equals(t.get("value")))&&!(t.get("value").equals(temp.get("value")))|(temp.get("value").equals(t.get("value")))&&!(t.get("value").equals(s.get("value")))|(s.get("value").equals(temp.get("value")))&&!(t.get("value").equals(temp.get("value"))))
+                        	nof2striads++;
+                        if((!s.get("value").equals(t.get("value")))&&(!temp.get("value").equals(t.get("value")))&&(!s.get("value").equals(temp.get("value"))))
+                        	nofdtriads++;
                     }
                     ((HashSet) t.get("close")).add(s);
                 }
@@ -73,6 +85,20 @@ public static double triad()
 {
 	return triad;
 }
+public static double striad()
+{
+	return nofstriads;
+}
+
+public static double s2triad()
+{
+	return nof2striads;
+}
+public static double dtriad()
+{
+	return nofdtriads;
+}
+
 public static double globalcoeff(Graph g)
 {
 	int n=g.getNodeCount();
