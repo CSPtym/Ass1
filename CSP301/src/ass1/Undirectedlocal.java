@@ -18,6 +18,7 @@ public class Undirectedlocal {
 	static int typec=0;
 	static int typen=0;
 	static int typel=0;
+	static double polariser=0;
 public static double localcoeff(Graph g)
 {
 	triad=0;
@@ -116,7 +117,7 @@ public static double ratio(Graph g)
 	typec=0;
 	typen=0;
 	typel=0;
-	double polariser=0.;
+	polariser=0.;
 	int e=g.getEdgeCount();
 	int n=g.getNodeCount();
 	for(int i=0;i<e;i++)
@@ -136,6 +137,14 @@ public static double ratio(Graph g)
 	//System.out.println("ratio="+ratio);
 	return(ratio);
 }
+
+
+
+public static double polariser()
+{
+	return polariser;
+}
+
 
 public static int typec()
 {

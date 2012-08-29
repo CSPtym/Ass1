@@ -17,6 +17,7 @@ static double nof2striads=0;
 static double nofdtriads=0;
 static int typeleft=0;
 static int typeright=0;
+static double polariser=0; 
 public static double localcoeff(Graph g)
 {
 	noftriads=0;
@@ -132,7 +133,7 @@ public static double ratio(Graph g)
 {
 	typeright=0;
 	typeleft=0;
-	double polariser=0.;
+polariser=0.;
 	int e=g.getEdgeCount();
 	int n=g.getNodeCount();
 	for(int i=0;i<e;i++)
@@ -151,6 +152,13 @@ public static double ratio(Graph g)
 	//System.out.println("ratio="+ratio);
 	return(ratio);
 }
+
+
+public static double polariser()
+{
+	return polariser;
+}
+
 
 public static int typeleft()
 {return typeleft;

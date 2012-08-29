@@ -26,9 +26,9 @@ import prefuse.action.ActionList;
 import prefuse.action.RepaintAction;
 import prefuse.action.assignment.ColorAction;
 import prefuse.action.assignment.DataColorAction;
+import prefuse.action.assignment.DataShapeAction;
 import prefuse.action.filter.GraphDistanceFilter;
 import prefuse.action.layout.graph.ForceDirectedLayout;
-import prefuse.activity.Activity;
 import prefuse.controls.ControlAdapter;
 import prefuse.controls.DragControl;
 import prefuse.controls.FocusControl;
@@ -41,9 +41,8 @@ import prefuse.data.Graph;
 import prefuse.data.Tuple;
 import prefuse.data.event.TupleSetListener;
 import prefuse.data.tuple.TupleSet;
-
-
 import prefuse.render.DefaultRendererFactory;
+import prefuse.render.LabelRenderer;
 import prefuse.render.ShapeRenderer;
 import prefuse.util.ColorLib;
 import prefuse.util.FontLib;
@@ -61,7 +60,7 @@ import prefuse.visual.VisualItem;
  * @author <a href="http://jheer.org">jeffrey heer</a>
  */
 class NodeRenderer2 extends ShapeRenderer{
-
+	
 	@Override
 	protected Shape getRawShape(VisualItem item){
 		double x = item.getX();
@@ -70,8 +69,8 @@ class NodeRenderer2 extends ShapeRenderer{
         double y = item.getY();
         if ( Double.isNaN(y) || Double.isInfinite(y) )
             y = 0;
-        //int degree=(int)item.get("degree");
-        double width = getBaseSize()+10*item.getSize();
+        int degree=(int)item.get("degree");
+        double width = getBaseSize()+item.getSize();
         // Center the shape around the specified x and y
         if ( width > 1 ) {
             x = x-width/2;
@@ -87,7 +86,7 @@ class NodeRenderer2 extends ShapeRenderer{
 			return triangle_left((float) x, (float) y, (float) width);
 		else
 			return ellipse(x, y, width, width);
-       /* if (!item.canGet("value",String.class))
+        /*if (!item.canGet("value",String.class))
         	return ellipse(x, y, width, width);
         String v=(String)item.get("value");
         if (v.equals("c"))
@@ -100,6 +99,7 @@ class NodeRenderer2 extends ShapeRenderer{
 	}
 }
 
+
 public class GraphDummy extends JPanel {
 
     private static final String graph = "graph";
@@ -109,7 +109,7 @@ public class GraphDummy extends JPanel {
     private Visualization vis;
     
     
-    public GraphDummy(Graph g, String label) {
+    public GraphDummy(Graph g, String label,int id) {
     	super(new BorderLayout());
     	
         // create a new, empty visualization for our data
@@ -141,48 +141,63 @@ public class GraphDummy extends JPanel {
     	// set up the renderers
 
     	//ShapeRenderer shape1=new ShapeRenderer(20);
-    	NodeRenderer2 rn=new NodeRenderer2();
-    	vis.setRendererFactory(new DefaultRendererFactory(rn));
+    	if(id==257)
+    	{
     	
+    		NodeRenderer2 rn2=new NodeRenderer2();
+    		vis.setRendererFactory(new DefaultRendererFactory(rn2));
+    	}
     	
+    	else
+    	{
+    		
+    		LabelRenderer rn=new LabelRenderer(label);
+        	rn.setRoundedCorner(8, 8);
+        	rn.setMaxTextWidth(5000);
+       
+        
+        	vis.setRendererFactory(new DefaultRendererFactory(rn));
+    	}
     	// -- set up the actions ----------------------------------------------
 
+    	int maxhops = 5, hops = 5;
+    	final GraphDistanceFilter filter = new GraphDistanceFilter(graph, hops);
 
-		int maxhops = 5, hops = 5;
-		final GraphDistanceFilter filter = new GraphDistanceFilter(graph, hops);
-
-		int[] palette = new int[] { ColorLib.rgba(255,0,102,150),
-				ColorLib.rgba(153,255,51,150), ColorLib.rgba(0,102,255,240) };
+    	int[] palette = new int[] { ColorLib.rgb(255,0,102),
+				ColorLib.rgb(153,255,51)};
 		// map nominal data values to colors using our provided palette
 		DataColorAction filler = new DataColorAction(nodes, "value",
 				Constants.NOMINAL, VisualItem.FILLCOLOR, palette);
+		int[] shapes=new int[]{Constants.SHAPE_STAR,Constants.SHAPE_TRIANGLE_LEFT};
+		DataShapeAction shape=new DataShapeAction(nodes,"value",shapes);
 		int[] color = new int[] { ColorLib.rgb(41,0,102),
-				ColorLib.rgb(26, 255, 0), ColorLib.rgb(204,204,163) };
+				ColorLib.rgb(26, 255, 0)};
 		DataColorAction strokecolor = new DataColorAction(nodes, "value",
 				Constants.NOMINAL, VisualItem.STROKECOLOR, color);
 		int[] color1 = new int[] {ColorLib.rgb(204,204,208)};
 		DataColorAction edgecolor = new DataColorAction(edges, "value",
 				Constants.NOMINAL, VisualItem.STROKECOLOR, color1);
-
-
-
-
-
+		
+		
+			
+			
+		
 		filler.add("_fixed", ColorLib.rgba(200,0,0,0));// Giving red
 																// color to
 																// focussed node
-		filler.add("_highlight", ColorLib.rgba(255,255,204,200));// Giving yellow
+		filler.add("_highlight", ColorLib.rgb(255,255,204));// Giving yellow
 																// colors to
 																// it's
 																// neighbours
-
+		
 		strokecolor.add("_highlight", ColorLib.rgba(0, 0, 0,100));
-
+		
 		edgecolor.add("_highlight", ColorLib.rgb(0,0,0));
 
 		ActionList draw = new ActionList();
 		draw.add(filter);
 		draw.add(filler);
+		draw.add(shape);
 		draw.add(strokecolor);
 		draw.add(edgecolor);
 		draw.add(new ColorAction(nodes, VisualItem.TEXTCOLOR, ColorLib.rgb(0,
@@ -194,51 +209,53 @@ public class GraphDummy extends JPanel {
 		draw.add(new ColorAction(edges, VisualItem.STROKECOLOR, ColorLib.rgb(
 				232, 204, 204)));
 		ForceDirectedLayout fdl = new ForceDirectedLayout(graph);
-
-		ForceSimulator fsim = fdl.getForceSimulator();
-		fsim.getForces()[0].setParameter(0, -8.2f);
-		fsim.getForces()[0].setParameter(1, -8.2f);
+    	
+    	
+    	ForceSimulator fsim = fdl.getForceSimulator();
+    	fsim.getForces()[0].setParameter(0, -8.2f);
+    	fsim.getForces()[0].setParameter(1, -8.2f);
+    	
 		// fsim.getForces()[1].setParameter(0, -8.2f);
 		ActionList animate = new ActionList(30000);
 		animate.add(fdl);
 		animate.add(filler);
+		animate.add(shape);
 		animate.add(strokecolor);
 		animate.add(edgecolor);
 		animate.add(new RepaintAction());
+    	// finally, we register our ActionList with the Visualization.
+    	// we can later execute our Actions by invoking a method on our
+    	// Visualization, using the name we've chosen below.
+    	vis.putAction("draw", draw);
+    	vis.putAction("layout", animate);
+    	vis.runAfter("draw", "layout");
 
-		// finally, we register our ActionList with the Visualization.
-		// we can later execute our Actions by invoking a method on our
-		// Visualization, using the name we've chosen below.
-		vis.putAction("draw", draw);
-		vis.putAction("layout", animate);
-		vis.runAfter("draw", "layout");
+    	// --------------------------------------------------------------------
+    	// STEP 4: set up a display to show the visualization
 
-		// --------------------------------------------------------------------
-		// STEP 4: set up a display to show the visualization
+    	Display display = new Display(vis);
+    	display.setSize(500,500);
+    	//display.setForeground(Color.GRAY);
+    	display.setBackground(Color.WHITE);
 
-		Display display = new Display(vis);
-		display.setSize(1000, 700);
-		display.pan(500, 350);
-		// display.setForeground(Color.GRAY);
+    	// main display controls
+    	display.addControlListener(new FocusControl(1));
+    	display.addControlListener(new DragControl());
+    	display.addControlListener(new PanControl());
+    	//display.addControlListener(new FinalControlListener());
+    	display.addControlListener(new ZoomControl());
+    	display.addControlListener(new WheelZoomControl());
+    	display.addControlListener(new ZoomToFitControl());
+    	display.addControlListener(new NeighborHighlightControl());
 
-		display.setBackground(Color.WHITE);
+    	
+    	// --------------------------------------------------------------------
+    	// STEP 5: launching the visualization
 
-		// main display controls
-		display.addControlListener(new FocusControl(1));
-		display.addControlListener(new DragControl());
-		display.addControlListener(new PanControl());
-		//display.addControlListener(new FinalControlListener());
-		display.addControlListener(new ZoomControl());
-		display.addControlListener(new WheelZoomControl());
-		display.addControlListener(new ZoomToFitControl());
-		display.addControlListener(new NeighborHighlightControl());
-
-		// --------------------------------------------------------------------
-		// STEP 5: launching the visualization
-
-		// create a panel for editing force values
-
-		final JFastLabel name1 = new JFastLabel();
+    	// create a panel for editing force values
+    	
+    	
+    	final JFastLabel name1 = new JFastLabel();
 		name1.setPreferredSize(new Dimension(390, 30));
 		name1.setMaximumSize(new Dimension(390, 30));
 		name1.setVerticalAlignment(SwingConstants.TOP);
@@ -285,7 +302,7 @@ public class GraphDummy extends JPanel {
 				name1.setText(null);
 			}
 		});
-
+	
     	
 		Box info = UILib
 				.getBox(new Component[] { name1, aff1 }, false, 0, 2, 0);
@@ -300,55 +317,53 @@ public class GraphDummy extends JPanel {
 		Box pf = new Box(BoxLayout.Y_AXIS);
 		pf.add(star);
 		pf.add(triangle);
-		//pf.add(Circle);
+    	
+    	pf.setBorder(BorderFactory.createTitledBorder("Values"));
+    	pf.setMaximumSize(new Dimension(250, 15));
+    	final JForcePanel fpanel = new JForcePanel(fsim);
+    	final JValueSlider slider = new JValueSlider("Distance", 0, maxhops,
+    			hops);
+    	slider.addChangeListener(new ChangeListener() {
+    		public void stateChanged(ChangeEvent e) {
+    			filter.setDistance(slider.getValue().intValue());
+    			vis.run("draw");
+    		}
+    	});
+    	slider.setBackground(Color.WHITE);
+    	slider.setPreferredSize(new Dimension(300, 30));
+    	slider.setMaximumSize(new Dimension(300, 30));
 
-		pf.setBorder(BorderFactory.createTitledBorder("Values"));
-		pf.setMaximumSize(new Dimension(300, 30));
-		final JForcePanel fpanel = new JForcePanel(fsim);
-		final JValueSlider slider = new JValueSlider("Distance", 0, maxhops,
-				hops);
-		slider.addChangeListener(new ChangeListener() {
-			public void stateChanged(ChangeEvent e) {
-				filter.setDistance(slider.getValue().intValue());
-				vis.run("draw");
-			}
-		});
-		slider.setBackground(Color.WHITE);
-		slider.setPreferredSize(new Dimension(300, 30));
-		slider.setMaximumSize(new Dimension(300, 30));
+    	Box cf = new Box(BoxLayout.Y_AXIS);
+    	cf.add(slider);
+    	cf.setBorder(BorderFactory.createTitledBorder("Connectivity Filter"));
 
-		Box cf = new Box(BoxLayout.Y_AXIS);
-		cf.add(slider);
-		cf.setBorder(BorderFactory.createTitledBorder("Connectivity Filter"));
-
-		fpanel.add(cf);
-
-		fpanel.add(pf);
-		fpanel.add(info);
-
-		fpanel.add(Box.createVerticalGlue());
-
-		// display.setAlignmentX(CENTER_ALIGNMENT);
-		// create a new JSplitPane to present the interface
-		JSplitPane split = new JSplitPane();
-		split.setLeftComponent(display);
-		split.setRightComponent(fpanel);
-
-		// split.setTopComponent(opanel);
-		split.setOneTouchExpandable(true);
-		split.setContinuousLayout(false);
-		//split.setDividerLocation(530);
-		//split.setDividerLocation(800);
-		split.setResizeWeight(0.9);
-
-		// position and fix the default focus node
-		NodeItem focus = (NodeItem) vg.getNode(0);
-		PrefuseLib.setX(focus, null, 800);
-		PrefuseLib.setY(focus, null, 400);
-		focusGroup.setTuple(focus);
-
-		// now we run our action list and return
-		add(split);
+    	fpanel.add(cf);
+    	fpanel.add(pf);
+    	fpanel.add(info);
+    	
+    	fpanel.add(Box.createVerticalGlue());
+    	
+    	display.setAlignmentX(CENTER_ALIGNMENT);
+    	// create a new JSplitPane to present the interface
+    	JSplitPane split = new JSplitPane();
+    	split.setLeftComponent(display);
+    	split.setRightComponent(fpanel);
+    	
+    	//split.setTopComponent(opanel);
+    	split.setOneTouchExpandable(true);
+    	split.setContinuousLayout(false);
+    	split.setDividerLocation(530);
+    	split.setDividerLocation(800);
+    	split.setResizeWeight(0.8);
+    	
+    	// position and fix the default focus node
+    	NodeItem focus = (NodeItem) vg.getNode(0);
+    	PrefuseLib.setX(focus, null, 800);
+    	PrefuseLib.setY(focus, null, 400);
+    	focusGroup.setTuple(focus);
+    	
+    	// now we run our action list and return
+    	add(split);
 
 
     }
@@ -373,3 +388,6 @@ public class GraphDummy extends JPanel {
     
   
     }
+    
+ 
+     // end of class GraphView

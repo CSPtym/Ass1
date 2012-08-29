@@ -161,13 +161,17 @@ public class polbooks extends JPrefuseApplet {
 		System.out.println("2Striads : " + s2triads);
 		
 		double dtriads = triad.dtriad();
-		System.out.println("dStriads : " + dtriads);
 		
 		
 		double globalundi=triad.globalcoeff(g);
 		System.out.println("Global Coefficient : "+globalundi);
-		double polariser=triad.ratio(g);
-		System.out.println("Polarising Coefficient : "+polariser);
+		double ratio=triad.ratio(g);
+		System.out.println("Polarising Coefficient : "+ratio);
+		
+		
+		double polariser=triad.polariser();
+		System.out.println("No. of edges b/w same type"+polariser);
+		
 		
 		int typec=triad.typec();
 		System.out.println("No. of edges b/w conservative and conservative"+typec);
@@ -291,6 +295,7 @@ public class polbooks extends JPrefuseApplet {
 	}
 	
 	
+	
 	g.addColumn("degree",Integer.class);
 	g.addColumn("id",Integer.class);
 	for (int i=0;i<g.getNodeCount();i++){
@@ -325,6 +330,12 @@ public class polbooks extends JPrefuseApplet {
 	// map nominal data values to colors using our provided palette
 	DataColorAction filler = new DataColorAction(nodes, "value",
 			Constants.NOMINAL, VisualItem.FILLCOLOR, palette);
+	int[] colorcross=new int[]{ ColorLib.rgb(255,133,133),
+			ColorLib.rgb(
+					232, 204, 204)};
+	
+	DataColorAction cross = new DataColorAction(edges, "edgelabel",
+			Constants.NOMINAL, VisualItem.STROKECOLOR, colorcross);
 	filler.add("_fixed", ColorLib.rgb(255, 100, 100));// Giving red color to
 														// focussed node
 	filler.add("_highlight", ColorLib.rgb(255, 255, 153));// Giving yellow
@@ -335,6 +346,7 @@ public class polbooks extends JPrefuseApplet {
 	ActionList draw = new ActionList();
 	draw.add(filter);
 	draw.add(filler);
+	draw.add(cross);
 	draw.add(new ColorAction(nodes, VisualItem.TEXTCOLOR, ColorLib.rgb(0,
 			0, 0)));
 	draw.add(new ColorAction(edges, VisualItem.FILLCOLOR, ColorLib
@@ -350,6 +362,7 @@ public class polbooks extends JPrefuseApplet {
 	fsim.getForces()[0].setParameter(1, -8.2f);
 	ActionList animate = new ActionList(Activity.INFINITY);
 	animate.add(fdl);
+	animate.add(cross);
 	animate.add(filler);
 	animate.add(new RepaintAction());
 

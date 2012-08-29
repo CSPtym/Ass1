@@ -135,30 +135,37 @@ public class polblogs extends JPrefuseApplet {
 		double[] B = new double[30];
 		double[] C = new double[30];
 		double[] D = new double[30];
+		
 		Directedtriad triad = new Directedtriad();
 		double localundi = triad.localcoeff(g);
 		System.out.println("Local Coefficient : " + localundi);
 		double triads = triad.triad();
 		double striads = triad.striad();
 		System.out.println("Striads : " + striads);
-		
+
 		double s2triads = triad.s2triad();
 		System.out.println("2Striads : " + s2triads);
-		
+
 		double dtriads = triad.dtriad();
 		System.out.println("dStriads : " + dtriads);
 		System.out.println("Triads : " + striads);
 		double globalundi = triad.globalcoeff(g);
 		System.out.println("Global Coefficient : " + globalundi);
-		double polariser = triad.ratio(g);
-		System.out.println("Polarising Coefficient : " + polariser);
+		double ratio = triad.ratio(g);
+		System.out.println("Polarising Coefficient : " + ratio);
+
+		double polariser=triad.polariser();
+		System.out.println("No. of edges b/w same type"+polariser);
 		
 		int typeleft=triad.typeleft();
 		System.out.println("No. of edges b/w left leaning and left leaning"+typeleft);
-		
-		
+
+
 		int typeright=triad.typeright();
 		System.out.println("No. of edges b/w right leaning and right leaning"+typeright);
+
+		
+		
 		
 		/*
 		Table table = new Table();
@@ -245,9 +252,11 @@ public class polblogs extends JPrefuseApplet {
 		caller(g, label);
 
 		Differentedges ded = new Differentedges();
-		int[] dedges = ded.dedges(g);
+		
+		int[] dedges = ded.dedges(h);
 		int index = ded.index();
-		System.out.println(g.getEdgeCount());
+		System.out.println(h.getEdge(0).get("edgelabel"));
+		//System.out.println(g.getEdgeCount());
 		/*for (int i = 0; i < index; i++) {
 			System.out.println(dedges[i]);
 		}
@@ -303,7 +312,10 @@ public class polblogs extends JPrefuseApplet {
 		int[] color1 = new int[] { ColorLib.rgb(204, 204, 208) };
 		DataColorAction edgecolor = new DataColorAction(edges, "value",
 				Constants.NOMINAL, VisualItem.STROKECOLOR, color1);
-
+		int[] colorcross=new int[]{ ColorLib.rgb(41, 0, 102),
+				ColorLib.rgb(26, 255, 0)};
+		//DataColorAction cross = new DataColorAction(edges, "edgelabel",
+				//Constants.NOMINAL, VisualItem.FILLCOLOR, colorcross);
 		filler.add("_fixed", ColorLib.rgba(200, 0, 0, 0));// Giving red
 															// color to
 															// focussed node
@@ -320,6 +332,7 @@ public class polblogs extends JPrefuseApplet {
 		ActionList draw = new ActionList();
 		draw.add(filter);
 		draw.add(filler);
+		//draw.add(cross);
 		draw.add(strokecolor);
 		draw.add(edgecolor);
 		draw.add(new ColorAction(nodes, VisualItem.TEXTCOLOR, ColorLib.rgb(0,
@@ -339,6 +352,7 @@ public class polblogs extends JPrefuseApplet {
 		ActionList animate = new ActionList(30000);
 		animate.add(fdl);
 		animate.add(filler);
+		//animate.add(cross);
 		animate.add(strokecolor);
 		animate.add(edgecolor);
 		animate.add(new RepaintAction());
@@ -417,7 +431,7 @@ public class polblogs extends JPrefuseApplet {
 					Integer id = (Integer) item.get("id");
 					System.out.println(id);
 
-					JPanel jpan = new GraphDummy(arr[id], "label");
+					JPanel jpan = new GraphDummy(arr[id], "label",id);
 					frame.getContentPane().add(jpan);
 					frame.setVisible(true);
 
@@ -487,4 +501,4 @@ public class polblogs extends JPrefuseApplet {
 
 		return (helper(g, label));
 	}
-} // end of class GraphView
+}
