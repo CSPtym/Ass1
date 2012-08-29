@@ -160,7 +160,7 @@ public class polbooks extends JPrefuseApplet {
 		double s2triads = triad.s2triad();
 		System.out.println("2Striads : " + s2triads);
 		
-		double dtriads = triad.striad();
+		double dtriads = triad.dtriad();
 		System.out.println("dStriads : " + dtriads);
 		
 		
@@ -168,6 +168,21 @@ public class polbooks extends JPrefuseApplet {
 		System.out.println("Global Coefficient : "+globalundi);
 		double polariser=triad.ratio(g);
 		System.out.println("Polarising Coefficient : "+polariser);
+		
+		int typec=triad.typec();
+		System.out.println("No. of edges b/w conservative and conservative"+typec);
+		
+		
+
+		
+		int typel=triad.typel();
+		System.out.println("No. of edges b/w liberal and liberal"+typel);
+		
+		int typen=triad.typen();
+		System.out.println("No. of edges b/w neutral and neutral"+typen);
+		
+		
+		
 	/*	 Table table=new Table();
 
 			table.addColumn("Graphs",String.class);

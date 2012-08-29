@@ -15,6 +15,8 @@ static double noftriads=0;
 static double nofstriads=0;
 static double nof2striads=0;
 static double nofdtriads=0;
+static int typeleft=0;
+static int typeright=0;
 public static double localcoeff(Graph g)
 {
 	noftriads=0;
@@ -128,13 +130,20 @@ public static double globalcoeff(Graph g)
 }
 public static double ratio(Graph g)
 {
-
+	typeright=0;
+	typeleft=0;
 	double polariser=0.;
 	int e=g.getEdgeCount();
 	int n=g.getNodeCount();
 	for(int i=0;i<e;i++)
 	if(g.getNode((int) g.getKey(g.getSourceNode(i))).get(1).equals(g.getNode((int) g.getKey(g.getTargetNode(i))).get(1)) )
-		polariser++;
+		{
+		if(g.getNode((int) g.getKey(g.getSourceNode(i))).get(1).equals("0"))
+			typeleft++;
+		else
+			typeright++;
+			polariser++;
+		}
 
 	//System.out.println("polariser= "+polariser);
 	//int nc2=(n*(n-1))/2;
@@ -143,4 +152,11 @@ public static double ratio(Graph g)
 	return(ratio);
 }
 
+public static int typeleft()
+{return typeleft;
+	}
+
+public static int typeright()
+{return typeright;
+	}
 }

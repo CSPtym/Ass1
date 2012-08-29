@@ -15,12 +15,16 @@ public class Undirectedlocal {
 	static double nofstriads=0;
 	static double nof2striads=0;
 	static double nofdtriads=0;
+	static int typec=0;
+	static int typen=0;
+	static int typel=0;
 public static double localcoeff(Graph g)
 {
 	triad=0;
 	nofstriads=0;
 	nof2striads=0;
 	nofdtriads=0;
+	
 	int n=(int)g.getNodeCount();
 	double [] triads=new double[n];
 	double [] nc2=new double[n];
@@ -59,7 +63,7 @@ public static double localcoeff(Graph g)
                             nofstriads++;
                         if((s.get("value").equals(t.get("value")))&&!(t.get("value").equals(temp.get("value")))|(temp.get("value").equals(t.get("value")))&&!(t.get("value").equals(s.get("value")))|(s.get("value").equals(temp.get("value")))&&!(t.get("value").equals(temp.get("value"))))
                         	nof2striads++;
-                        if((!s.get("value").equals(t.get("value")))&&(!temp.get("value").equals(t.get("value")))&&(!s.get("value").equals(temp.get("value"))))
+                        if((!s.get("value").equals(t.get("value")))&&(!t.get("value").equals(temp.get("value")))&&(!temp.get("value").equals(s.get("value"))))
                         	nofdtriads++;
                     }
                     ((HashSet) t.get("close")).add(s);
@@ -109,18 +113,42 @@ public static double globalcoeff(Graph g)
 }
 public static double ratio(Graph g)
 {
-
+	typec=0;
+	typen=0;
+	typel=0;
 	double polariser=0.;
 	int e=g.getEdgeCount();
 	int n=g.getNodeCount();
 	for(int i=0;i<e;i++)
-	if(g.getNode((int) g.getKey(g.getSourceNode(i))).get(1).equals(g.getNode((int) g.getKey(g.getTargetNode(i))).get(1)) )
-		polariser++;
-
+	if(g.getNode((int) g.getKey(g.getSourceNode(i))).get("value").equals(g.getNode((int) g.getKey(g.getTargetNode(i))).get("value")) )
+		{
+		if(g.getNode((int) g.getKey(g.getSourceNode(i))).get("value").equals("c"))
+		typec++;
+		if(g.getNode((int) g.getKey(g.getSourceNode(i))).get("value").equals("n"))
+			typen++;
+		else
+			typel++;
+			polariser++;
+		}
 	//System.out.println("polariser= "+polariser);
 	//int nc2=(n*(n-1))/2;
 	double ratio=polariser/e;
 	//System.out.println("ratio="+ratio);
 	return(ratio);
+}
+
+public static int typec()
+{
+	return typec;
+}
+
+public static int typen()
+{
+	return typen;
+}
+
+public static int typel()
+{
+	return typel;
 }
 }

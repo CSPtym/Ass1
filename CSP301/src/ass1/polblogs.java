@@ -145,13 +145,22 @@ public class polblogs extends JPrefuseApplet {
 		double s2triads = triad.s2triad();
 		System.out.println("2Striads : " + s2triads);
 		
-		double dtriads = triad.striad();
+		double dtriads = triad.dtriad();
 		System.out.println("dStriads : " + dtriads);
 		System.out.println("Triads : " + striads);
 		double globalundi = triad.globalcoeff(g);
 		System.out.println("Global Coefficient : " + globalundi);
 		double polariser = triad.ratio(g);
 		System.out.println("Polarising Coefficient : " + polariser);
+		
+		int typeleft=triad.typeleft();
+		System.out.println("No. of edges b/w left leaning and left leaning"+typeleft);
+		
+		
+		int typeright=triad.typeright();
+		System.out.println("No. of edges b/w right leaning and right leaning"+typeright);
+		
+		/*
 		Table table = new Table();
 
 		table.addColumn("Graphs", String.class);
@@ -185,7 +194,7 @@ public class polblogs extends JPrefuseApplet {
 		} catch (Exception e) {
 			System.err.println("Error: " + e.getMessage());
 
-		}
+		}*/
 
 	}
 
@@ -239,9 +248,13 @@ public class polblogs extends JPrefuseApplet {
 		int[] dedges = ded.dedges(g);
 		int index = ded.index();
 		System.out.println(g.getEdgeCount());
-		for (int i = 0; i < index; i++) {
+		/*for (int i = 0; i < index; i++) {
 			System.out.println(dedges[i]);
 		}
+		
+		
+		
+		*/
 
 		/*
 		 * g.addColumn("degree",Integer.class); for (int
